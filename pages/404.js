@@ -14,14 +14,14 @@ export default function Error404() {
       try {
         const parsed = JSON.parse(storedApplication);
         setApplicationData({
-          name: parsed.name || 'Ciroos AI',
+          name: parsed.name || 'XinXun',
           healthy: parsed.healthy || false,
         });
       } catch (e) {
-        setApplicationData({ name: 'Ciroos AI', healthy: false });
+        setApplicationData({ name: 'XinXun', healthy: false });
       }
     } else {
-      setApplicationData({ name: 'Ciroos AI', healthy: false });
+      setApplicationData({ name: 'XinXun', healthy: false });
     }
     
     const timer = setInterval(() => {
@@ -49,8 +49,8 @@ export default function Error404() {
   return (
     <div className="min-h-screen bg-[#0A0A0A] flex items-center justify-center p-4 relative overflow-hidden">
       <Head>
-        <title>{applicationData?.name || 'Ciroos'} | 404 - Halaman Tidak Ditemukan</title>
-        <meta name="description" content={`${applicationData?.name || 'Ciroos'} 404 - Halaman Tidak Ditemukan`} />
+        <title>{applicationData?.name || 'XinXun'} | 404 - Halaman Tidak Ditemukan</title>
+        <meta name="description" content={`${applicationData?.name || 'XinXun'} 404 - Halaman Tidak Ditemukan`} />
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
@@ -166,7 +166,7 @@ export default function Error404() {
           <Icon icon="mdi:lifebuoy" className="w-8 h-8 text-[#F45D16] mx-auto mb-3" />
           <p className="text-white/60 text-xs mb-3">Masih butuh bantuan?</p>
           <button
-            onClick={() => window.open('https://t.me/Ciroos_Ai', '_blank')}
+            onClick={() => window.open('https://t.me/XinXun_Ai', '_blank')}
             className="inline-flex items-center gap-2 text-[#F45D16] hover:text-[#FF6B35] text-sm font-semibold transition-colors"
           >
             <Icon icon="mdi:telegram" className="w-5 h-5" />

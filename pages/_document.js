@@ -7,13 +7,13 @@ export default function Document() {
       <Head>
         {/* PWA Basic Meta Tags */}
         <link rel="manifest" href="/manifest.json" />
-        <meta name="application-name" content="Ciroos" />
+        <meta name="application-name" content="XinXun" />
         <meta name="theme-color" content="#F45D16" />
         
         {/* iOS PWA Meta Tags */}
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-        <meta name="apple-mobile-web-app-title" content="Ciroos" />
+        <meta name="apple-mobile-web-app-title" content="XinXun" />
         <meta name="format-detection" content="telephone=no" />
         <meta name="mobile-web-app-capable" content="yes" />
         
@@ -118,7 +118,7 @@ export default function Document() {
         
         {/* Open Graph / Social Media */}
         <meta property="og:type" content="website" />
-        <meta property="og:site_name" content="Ciroos" />
+        <meta property="og:site_name" content="XinXun" />
         <meta property="og:image" content="/og-image.png" />
         <meta property="twitter:card" content="summary_large_image" />
         <meta property="twitter:image" content="/twitter-image.png" />

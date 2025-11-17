@@ -2,7 +2,7 @@
   "relation": ["delegate_permission/common.handle_all_urls"],
   "target": {
     "namespace": "android_app",
-    "package_name": "ca.ciroos",
+    "package_name": "us.xinxun.app",
     "sha256_cert_fingerprints": [
       "02:02:0D:E2:3B:12:E5:4B:CF:F3:05:EE:5B:56:52:DB:20:E1:F2:35:01:E5:7A:53:A7:96:DB:56:78:32:05:7F"
     ]

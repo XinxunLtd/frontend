@@ -113,6 +113,13 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
       badge: null,
       color: "from-pink-600 to-rose-600"
     },
+    {
+      icon: "mdi:category",
+      label: "Kelola Kategori",
+      path: "/panel-admin/categories",
+      badge: null,
+      color: "from-orange-600 to-yellow-600"
+    },
     { 
       icon: "mdi:package-variant", 
       label: "Kelola Produk", 

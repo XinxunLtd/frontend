@@ -1,12 +1,12 @@
 {
-    "name": "Ciroos",
-    "short_name": "Ciroos",
-    "description": "Ciroos - Your Partnert Investment",
+    "name": "XinXun",
+    "short_name": "XinXun",
+    "description": "XinXun - Your Partnert Investment",
     "start_url": "/",
     "display": "standalone",
     "orientation": "portrait",
     "background_color": "#0A0A0A",
-    "theme_color": "#F45D16",
+    "theme_color": "#fe7d17",
     "dir": "ltr",
     "lang": "id-ID",
     "scope": "/",
@@ -67,20 +67,20 @@
         "src": "/screenshots/screenshot-1.png",
         "sizes": "540x720",
         "type": "image/png",
-        "label": "Dashboard Ciroos"
+        "label": "Dashboard"
       },
       {
         "src": "/screenshots/screenshot-2.png",
         "sizes": "540x720",
         "type": "image/png",
-        "label": "Profile Page"
+        "label": "Profile"
       }
     ],
     "related_applications": [
       {
         "platform": "play",
-        "url": "https://play.google.com/store/apps/details?id=ca.ciroos",
-        "id": "ca.ciroos"
+        "url": "https://play.google.com/store/apps/details?id=us.xinxun.app",
+        "id": "us.xinxun.app"
       }
     ],
     "shortcuts": [
@@ -156,7 +156,7 @@
     "iarc_rating_id": "",
     "protocol_handlers": [
       {
-        "protocol": "web+ciroos",
+        "protocol": "web+xinxun",
         "url": "/?url=%s"
       }
     ]

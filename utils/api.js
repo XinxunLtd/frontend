@@ -187,8 +187,11 @@ export const getInfo = async () => {
 };
 
 // Get investment history (riwayat investasi)
-export const getInvestmentHistory = async ({ limit = 10, page = 1 } = {}) => {
+export const getInvestmentHistory = async ({ limit = 10, page = 1, search = '' } = {}) => {
   let query = `?limit=${encodeURIComponent(limit)}&page=${encodeURIComponent(page)}`;
+  if (search && search.trim()) {
+    query += `&search=${encodeURIComponent(search.trim())}`;
+  }
   return apiRequest(`/users/investments${query}`, { method: 'GET' });
 };
 
@@ -201,15 +204,21 @@ export const withdrawUser = async ({ amount, bank_account_id }) => {
 };
 
 // Get withdrawal history
-export const getWithdrawalHistory = async ({ limit = 10, page = 1 } = {}) => {
+export const getWithdrawalHistory = async ({ limit = 10, page = 1, search = '' } = {}) => {
   let query = `?limit=${encodeURIComponent(limit)}&page=${encodeURIComponent(page)}`;
+  if (search && search.trim()) {
+    query += `&search=${encodeURIComponent(search.trim())}`;
+  }
   return apiRequest(`/users/withdrawal${query}`, { method: 'GET' });
 };
 
-export const getUserTransactions = async ({ limit = 20, page = 1, type } = {}) => {
+export const getUserTransactions = async ({ limit = 20, page = 1, type, search = '' } = {}) => {
   let query = `?limit=${encodeURIComponent(limit)}&page=${encodeURIComponent(page)}`;
   if (type && type !== 'all' && type.trim() !== '') {
     query += `&type=${encodeURIComponent(type)}`;
+  }
+  if (search && search.trim()) {
+    query += `&search=${encodeURIComponent(search.trim())}`;
   }
   return apiRequest(`/users/transaction${query}`, { method: 'GET' });
 };
@@ -240,8 +249,11 @@ export const getTeamInvitedByLevel = async (level) => {
 };
 
 // Get team member data for a specific level
-export const getTeamDataByLevel = async (level, { limit = 10, page = 1 } = {}) => {
+export const getTeamDataByLevel = async (level, { limit = 10, page = 1, search = '' } = {}) => {
   let query = `?limit=${encodeURIComponent(limit)}&page=${encodeURIComponent(page)}`;
+  if (search && search.trim()) {
+    query += `&search=${encodeURIComponent(search.trim())}`;
+  }
   return apiRequest(`/users/team-data/${level}${query}`, { method: 'GET' });
 };
 

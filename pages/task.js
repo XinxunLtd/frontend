@@ -36,14 +36,14 @@ export default function Bonus() {
       try {
         const parsed = JSON.parse(storedApplication); 
         setApplicationData({
-          name: parsed.name || 'Ciroos AI',
+          name: parsed.name || 'XinXun',
           healthy: parsed.healthy || false,
         });
       } catch (e) {
-        setApplicationData({ name: 'Ciroos AI', healthy: false });
+        setApplicationData({ name: 'XinXun', healthy: false });
       }
     } else {
-      setApplicationData({ name: 'Ciroos AI', healthy: false });
+      setApplicationData({ name: 'XinXun', healthy: false });
     }
   }, []);
 
@@ -90,8 +90,8 @@ export default function Bonus() {
   return (
     <div className="min-h-screen bg-[#0A0A0A] pb-32 relative overflow-hidden">
       <Head>
-        <title>{applicationData?.name || 'Ciroos AI'} | Bonus Tasks</title>
-        <meta name="description" content={`${applicationData?.name || 'Ciroos AI'} Bonus Tasks`} />
+        <title>{applicationData?.name || 'XinXun'} | Bonus Tasks</title>
+        <meta name="description" content={`${applicationData?.name || 'XinXun'} Bonus Tasks`} />
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
@@ -306,7 +306,7 @@ export default function Bonus() {
         {/* Copyright */}
         <div className="text-center text-white/40 text-[10px] flex items-center justify-center gap-1.5 mt-8">
           <Icon icon="mdi:copyright" className="w-3 h-3" />
-          <span>2025 {applicationData?.company || 'Ciroos, Inc'}. All Rights Reserved.</span>
+          <span>2025 {applicationData?.company || 'XinXun, Ltd'}. All Rights Reserved.</span>
         </div>
       </div>
 
@@ -412,7 +412,7 @@ export default function Bonus() {
   }
 }
 
-          /* Glassmorphism card matching Ciroos style */
+          /* Glassmorphism card matching XinXun style */
           .glassmorphism-card {
             background: radial-gradient(94.23% 79.86% at 50% 31.48%, rgba(243, 250, 247, 0.02) 57%, rgba(243, 250, 247, 0.10) 91.5%);
             border: 1px solid rgba(255, 255, 255, 0.08);

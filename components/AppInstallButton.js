@@ -223,67 +223,122 @@ export default function AppInstallButton({ applicationData, className = "" }) {
 
   const buttonConfig = getButtonConfig();
 
+  const primaryColor = '#fe7d17';
+
   return (
     <>
-      <div className={`relative ${className}`}>
-        <div className="absolute -inset-0.5 bg-gradient-to-r from-[#F45D16] to-[#0058BC] rounded-2xl blur opacity-20"></div>
-        <div className="relative bg-gradient-to-br from-[#1A1A1A] to-[#0F0F0F] rounded-2xl p-5 border border-white/10 text-center">
-          <div className="flex items-center justify-center gap-2 mb-3">
-            <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
-              isAppInstalledState ? 'bg-green-500/10' : 'bg-[#F45D16]/10'
-            }`}>
-              <Icon 
-                icon={buttonConfig.icon} 
-                className={`w-6 h-6 ${
-                  isAppInstalledState ? 'text-green-400' : 'text-[#F45D16]'
-                } ${buttonConfig.isLoading ? 'animate-spin' : ''}`} 
-              />
-            </div>
-            <h3 className="text-white font-bold text-base">
-              {applicationData?.name || 'Ciroos'} App
-            </h3>
-          </div>
-          
-          <p className="text-white/60 text-xs mb-4">
-            {isAppInstalledState 
-              ? 'Aplikasi sudah terinstall, klik untuk membuka'
-              : deviceType.isIOS 
-                ? 'Install aplikasi untuk akses lebih cepat & mudah'
-                : deviceType.isAndroid
-                  ? 'Download aplikasi resmi dari Play Store'
-                  : 'Aplikasi tersedia untuk perangkat mobile'
-            }
-          </p>
-          
-          <button
-            onClick={handleAppAction}
-            disabled={isCheckingInstallation}
-            className={`inline-flex items-center gap-2 ${
-              isAppInstalledState
-                ? 'bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700'
-                : 'bg-gradient-to-r from-[#F45D16] to-[#FF6B35] hover:from-[#d74e0f] hover:to-[#F45D16]'
-            } hover:scale-[1.02] active:scale-[0.98] text-white font-bold py-3 px-6 rounded-xl transition-all duration-300 shadow-lg ${
-              isCheckingInstallation ? 'opacity-50 cursor-not-allowed' : ''
-            } w-full`}
+      <div className={`${className}`}>
+        <div className="bg-white rounded-xl border border-gray-100 overflow-hidden">
+          {/* Header Section */}
+          <div
+            className="px-4 py-3 border-b border-gray-100"
+            style={{ backgroundColor: isAppInstalledState ? '#f0fdf4' : '#fff7ed' }}
           >
-            <Icon icon={buttonConfig.icon} className={`w-5 h-5 ${buttonConfig.isLoading ? 'animate-spin' : ''}`} />
-            <span className="flex-1">{buttonConfig.text}</span>
-          </button>
-
-          <p className="text-white/40 text-[10px] mt-3 flex items-center justify-center gap-1">
-            <Icon icon="mdi:information-outline" className="w-3 h-3" />
-            {buttonConfig.subtitle}
-          </p>
-
-          {/* Additional info for Android users */}
-          {deviceType.isAndroid && !isAppInstalledState && (
-            <div className="mt-4 p-3 bg-white/5 rounded-lg border border-white/10">
-              <p className="text-white/50 text-[10px] leading-relaxed">
-                <Icon icon="mdi:shield-check" className="w-3 h-3 inline mr-1 text-green-400" />
-                Aplikasi resmi & aman dari Google Play Store
-              </p>
+            <div className="flex items-center gap-3">
+              <div
+                className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
+                style={{
+                  backgroundColor: isAppInstalledState ? '#dcfce7' : primaryColor,
+                }}
+              >
+                <Icon
+                  icon={isAppInstalledState ? 'mdi:check-circle' : (deviceType.isAndroid ? 'ri:google-play-fill' : deviceType.isIOS ? 'mdi:apple' : 'mdi:cellphone-arrow-down')}
+                  className={`w-7 h-7 ${buttonConfig.isLoading ? 'animate-spin' : ''}`}
+                  style={{ color: isAppInstalledState ? '#16a34a' : '#fff' }}
+                />
+              </div>
+              <div className="flex-1 min-w-0">
+                <h3 className="text-sm font-bold text-gray-900">
+                  {applicationData?.name || 'Ciroos'} Mobile App
+                </h3>
+                <p className="text-xs text-gray-500 mt-0.5">
+                  {isAppInstalledState
+                    ? 'Aplikasi Terinstall'
+                    : deviceType.isAndroid
+                      ? 'Download dari Play Store'
+                      : deviceType.isIOS
+                        ? 'Add to Home Screen'
+                        : 'Untuk perangkat mobile'
+                  }
+                </p>
+              </div>
             </div>
-          )}
+          </div>
+
+          {/* Content Section */}
+          <div className="p-4">
+            {/* Status Message */}
+            {isCheckingInstallation ? (
+              <div className="flex items-center justify-center gap-2 py-3 mb-3 bg-gray-50 rounded-lg">
+                <div className="w-4 h-4 border-2 border-gray-300 border-t-orange-500 rounded-full animate-spin"></div>
+                <p className="text-xs text-gray-600">Memeriksa instalasi...</p>
+              </div>
+            ) : (
+              <p className="text-sm text-gray-700 text-center mb-4 leading-relaxed">
+                {isAppInstalledState
+                  ? '✅ Aplikasi sudah terinstall di perangkat Anda. Klik tombol di bawah untuk membuka aplikasi.'
+                  : deviceType.isIOS
+                    ? '📱 Install aplikasi untuk pengalaman lebih cepat dan kemudahan akses.'
+                    : deviceType.isAndroid
+                      ? '📲 Download aplikasi resmi dari Google Play Store untuk fitur lengkap.'
+                      : '💻 Aplikasi mobile tersedia untuk perangkat Android & iOS.'
+                }
+              </p>
+            )}
+
+            {/* Action Button */}
+            <button
+              onClick={handleAppAction}
+              disabled={isCheckingInstallation}
+              className={`w-full flex items-center justify-center gap-2 py-3 px-4 rounded-lg font-bold text-sm transition-all ${
+                isCheckingInstallation ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'text-white shadow-sm hover:shadow-md'
+              }`}
+              style={!isCheckingInstallation ? {
+                backgroundColor: isAppInstalledState ? '#16a34a' : primaryColor,
+              } : {}}
+            >
+              <Icon
+                icon={isCheckingInstallation ? 'mdi:loading' : (isAppInstalledState ? 'mdi:open-in-app' : buttonConfig.icon)}
+                className={`w-5 h-5 ${isCheckingInstallation ? 'animate-spin' : ''}`}
+              />
+              <span>
+                {isCheckingInstallation
+                  ? 'Checking...'
+                  : isAppInstalledState
+                    ? 'Buka Aplikasi'
+                    : deviceType.isAndroid
+                      ? 'Install dari Play Store'
+                      : deviceType.isIOS
+                        ? 'Panduan Install'
+                        : 'Install Aplikasi'
+                }
+              </span>
+            </button>
+
+            {/* Additional Info */}
+            {!isCheckingInstallation && (
+              <div className="mt-3">
+                {deviceType.isAndroid && !isAppInstalledState && (
+                  <div className="flex items-center justify-center gap-1.5 text-xs text-green-700 bg-green-50 border border-green-100 rounded-lg py-2 px-3">
+                    <Icon icon="mdi:shield-check-outline" className="w-4 h-4" />
+                    <span>Aplikasi resmi & terverifikasi</span>
+                  </div>
+                )}
+                {deviceType.isIOS && !isAppInstalledState && (
+                  <div className="flex items-center justify-center gap-1.5 text-xs text-blue-700 bg-blue-50 border border-blue-100 rounded-lg py-2 px-3">
+                    <Icon icon="mdi:information-outline" className="w-4 h-4" />
+                    <span>Gunakan Safari untuk install</span>
+                  </div>
+                )}
+                {isAppInstalledState && (
+                  <div className="flex items-center justify-center gap-1.5 text-xs text-green-700 bg-green-50 border border-green-100 rounded-lg py-2 px-3">
+                    <Icon icon="mdi:check-circle-outline" className="w-4 h-4" />
+                    <span>Ready to use</span>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
