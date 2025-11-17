@@ -165,7 +165,7 @@ export const testAndroidAppLinks = async () => {
  * @param {string} domain - Domain to test
  * @returns {string} Test URL
  */
-export const generateTestUrl = (packageName = 'ca.ciroos', domain = null) => {
+export const generateTestUrl = (packageName = 'us.xinxun.app', domain = null) => {
   const testDomain = domain || window.location.origin;
   return `https://yourdomain.com?test_app_links=true&package=${packageName}&domain=${testDomain}`;
 };

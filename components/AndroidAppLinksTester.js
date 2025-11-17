@@ -87,7 +87,7 @@ export default function AndroidAppLinksTester() {
             </div>
             
             <div className="text-white/60 text-xs">
-              Package: ca.ciroos
+              Package: us.xinxun.app
             </div>
           </div>
         )}

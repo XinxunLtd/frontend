@@ -90,7 +90,7 @@ export default function AppInstallButton({ applicationData, className = "" }) {
       }
     } else if (deviceType.isIOS) {
       // iOS: Gunakan custom URL scheme atau fallback ke PWA
-      const customScheme = `ciroos://open`;
+      const customScheme = `xinxun://open`;
       
       // Try custom scheme first
       const testLink = document.createElement('a');
@@ -192,7 +192,7 @@ export default function AppInstallButton({ applicationData, className = "" }) {
       return {
         icon: 'mdi:open-in-app',
         text: 'BUKA APLIKASI',
-        subtitle: 'Lanjutkan di aplikasi Ciroos',
+        subtitle: 'Lanjutkan di aplikasi XinXun',
         isLoading: false
       };
     }
@@ -249,7 +249,7 @@ export default function AppInstallButton({ applicationData, className = "" }) {
               </div>
               <div className="flex-1 min-w-0">
                 <h3 className="text-sm font-bold text-gray-900">
-                  {applicationData?.name || 'Ciroos'} Mobile App
+                  {applicationData?.name || 'XinXun'} Mobile App
                 </h3>
                 <p className="text-xs text-gray-500 mt-0.5">
                   {isAppInstalledState

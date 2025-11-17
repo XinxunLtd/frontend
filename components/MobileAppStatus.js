@@ -33,7 +33,7 @@ export default function MobileAppStatus({ applicationData, className = "" }) {
             </div>
             <div className="flex-1 min-w-0">
               <h3 className="text-sm font-bold text-gray-900">
-                {applicationData?.name || 'Ciroos'} Mobile App
+                {applicationData?.name || 'XinXun'} Mobile App
               </h3>
               <p className="text-xs text-green-700 mt-0.5 font-semibold">
                 ✓ Aplikasi Aktif
