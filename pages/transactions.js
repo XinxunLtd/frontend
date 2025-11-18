@@ -290,17 +290,6 @@ export default function Transactions() {
 
   const primaryColor = '#fe7d17';
 
-  if (loading && transactions.length === 0) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-12 h-12 border-4 border-gray-200 border-t-[#fe7d17] rounded-full animate-spin mx-auto mb-3"></div>
-          <p className="text-sm text-gray-500">Memuat transaksi...</p>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen bg-gray-50 pb-24">
       <Head>
