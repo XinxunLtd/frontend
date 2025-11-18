@@ -52,10 +52,10 @@ export default function Navigation() {
                 bottom: '0',
                 left: '0',
                 right: '0',
-                background: 'rgba(30, 30, 47, 0.95)',
+                background: 'rgba(255, 255, 255, 0.95)',
                 backdropFilter: 'blur(10px)',
-                borderTop: '1px solid rgba(160, 32, 240, 0.3)',
-                boxShadow: '0 -5px 15px rgba(0, 0, 0, 0.3)',
+                borderTop: '1px solid rgba(229, 231, 235, 0.8)',
+                boxShadow: '0 -2px 10px rgba(0, 0, 0, 0.05)',
                 display: 'flex',
                 justifyContent: 'space-around',
                 padding: '10px 0',
@@ -70,15 +70,16 @@ export default function Navigation() {
                                 display: 'flex',
                                 flexDirection: 'column',
                                 alignItems: 'center',
-                                color: isActive ? '#a020f0' : '#cccccc',
+                                color: isActive ? '#fe7d17' : '#9ca3af',
                                 cursor: 'pointer',
                                 padding: '5px 10px',
-                                minWidth: '60px'
+                                minWidth: '60px',
+                                transition: 'color 0.2s'
                             }}
                             onClick={() => router.push(item.href)}
                         >
                             <i className={item.icon} style={{fontSize: '20px'}}></i>
-                            <span style={{fontSize: '11px', marginTop: '5px'}}>{item.label}</span>
+                            <span style={{fontSize: '11px', marginTop: '5px', fontWeight: isActive ? '600' : '400'}}>{item.label}</span>
                         </div>
                     );
                 })}
