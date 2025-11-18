@@ -16,6 +16,7 @@ export default function Testimoni() {
     const [error, setError] = useState('');
     const [modalImage, setModalImage] = useState(null);
     const [applicationData, setApplicationData] = useState(null);
+    const [userData, setUserData] = useState(null);
     const [page, setPage] = useState(1);
     const [limit] = useState(20);
     const [totalTestimonials, setTotalTestimonials] = useState(0);
@@ -95,8 +96,8 @@ export default function Testimoni() {
                     console.log('✅ Using API pagination:', { total_rows: pagination.total_rows, total_pages: pagination.total_pages });
                 } else {
                     // Fallback: use old structure
-                    const total = res.data?.total || res.data?.total_count || res.total || items.length;
-                    setTotalTestimonials(typeof total === 'number' ? total : Number(total) || items.length);
+                const total = res.data?.total || res.data?.total_count || res.total || items.length;
+                setTotalTestimonials(typeof total === 'number' ? total : Number(total) || items.length);
                     setTotalPages(Math.max(1, Math.ceil((typeof total === 'number' ? total : Number(total) || items.length) / limit)));
                     console.log('⚠️ Using fallback pagination:', { total, calculatedPages: Math.ceil((typeof total === 'number' ? total : Number(total) || items.length) / limit) });
                 }
@@ -110,6 +111,24 @@ export default function Testimoni() {
             }
         };
         fetchTestimonials();
+        
+        const storedUser = localStorage.getItem('user');
+        if (storedUser) {
+          try {
+            const parsed = JSON.parse(storedUser);
+            setUserData({
+              name: parsed.name || '',
+              balance: parsed.balance || 0,
+              active: parsed.active || false,
+              level: parsed.level || 0,
+              total_invest: parsed.total_invest || 0,
+              total_invest_vip: parsed.total_invest_vip || 0
+            });
+          } catch (e) {
+            setUserData({ name: '', balance: 0, active: false, level: 0 });
+          }
+        }
+        
         const storedApplication = localStorage.getItem('application');
   if (storedApplication) {
     try {
@@ -180,10 +199,41 @@ export default function Testimoni() {
 
         {modalImage && <ImageModal url={modalImage} onClose={() => setModalImage(null)} />}
 
-        {/* Header */}
-        <div className="bg-white border-b border-gray-100">
-          <div className="mx-auto max-w-sm px-4 py-4">
-            <div className="flex items-center justify-between mb-4">
+        {/* Simple Top Bar */}
+        <div className="sticky top-0 z-40 bg-white border-b border-gray-200">
+          <div className="max-w-md mx-auto px-4 py-3 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Image 
+                src="/cover_logo.png"
+                alt="XinXun Logo"
+                width={120}
+                height={40}
+                className="object-contain"
+                priority
+              />
+            </div>
+            <div className="flex items-center gap-2">
+              <button 
+                onClick={() => router.push('/vip')}
+                className="px-3 py-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 flex items-center gap-1.5"
+              >
+                <Icon icon="mdi:crown" className="w-4 h-4" style={{ color: primaryColor }} />
+                <span className="text-sm font-semibold text-[#fe7d17]">VIP {userData?.level || 0}</span>
+              </button>
+              <button 
+                onClick={() => router.push('/portofolio')}
+                className="p-2 rounded-lg bg-gray-100 hover:bg-gray-200"
+              >
+                <Icon icon="mdi:chart-box" className="w-5 h-5" style={{ color: primaryColor }} />
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div className="mx-auto w-full max-w-sm px-4 pt-4 pb-6">
+          {/* Header Section */}
+          <div className="mb-4">
+            <div className="flex items-center justify-between mb-3">
               <div>
                 <h1 className="text-xl font-bold text-gray-900">Forum Testimoni</h1>
                 <p className="text-xs text-gray-500 mt-0.5">{totalTestimonials} testimoni terverifikasi</p>
@@ -207,40 +257,37 @@ export default function Testimoni() {
               </div>
             </div>
           </div>
-        </div>
-
-        <div className="mx-auto w-full max-w-sm px-4 pt-4 pb-6">
           {/* Loading State */}
           {loading && (
             <div className="flex flex-col items-center justify-center py-16">
               <div className="w-12 h-12 rounded-full border-3 border-gray-200 border-t-orange-500 animate-spin mb-3"></div>
               <p className="text-sm text-gray-600">Memuat testimoni...</p>
-            </div>
-          )}
+              </div>
+            )}
 
           {/* Error State */}
-          {error && !loading && (
+            {error && !loading && (
             <div className="bg-red-50 border border-red-100 rounded-lg px-4 py-4 text-center">
               <Icon icon="mdi:alert-circle-outline" className="mx-auto w-8 h-8 text-red-500 mb-2" />
               <p className="text-sm font-semibold text-red-800">Terjadi Kesalahan</p>
               <p className="mt-1 text-xs text-red-600">{error}</p>
-            </div>
-          )}
+              </div>
+            )}
 
           {/* Empty State */}
-          {!loading && !error && testimonials.length === 0 && (
+            {!loading && !error && testimonials.length === 0 && (
             <div className="bg-gray-50 border border-gray-100 rounded-lg px-4 py-12 text-center">
               <Icon icon="mdi:forum-outline" className="mx-auto w-12 h-12 text-gray-300 mb-3" />
               <p className="text-sm font-semibold text-gray-800">Belum Ada Testimoni</p>
               <p className="mt-1 text-xs text-gray-500 mb-4">Jadilah yang pertama membagikan pengalaman Anda</p>
-              <button
+            <button
                 onClick={() => router.push('/forum/upload')}
                 className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-white text-sm font-semibold"
                 style={{ backgroundColor: primaryColor }}
               >
                 <Icon icon="mdi:upload" className="w-4 h-4" />
                 Upload Sekarang
-              </button>
+            </button>
             </div>
           )}
 
@@ -256,7 +303,7 @@ export default function Testimoni() {
                   primaryColor={primaryColor}
                 />
               ))}
-            </div>
+          </div>
           )}
 
           {/* Pagination */}
@@ -360,7 +407,7 @@ function Pagination({ currentPage, totalPages, onPageChange, primaryColor }) {
             >
                 <Icon icon="mdi:chevron-right" className="w-4 h-4 text-gray-600" />
             </button>
-        </div>
+      </div>
     );
 }
 
@@ -382,11 +429,11 @@ function TestimonialCard({ t, setModalImage, formatCurrency, primaryColor }) {
       <div className="bg-white border border-gray-100 rounded-lg p-4 hover:shadow-sm transition-shadow">
         <div className="flex items-start gap-3 mb-3">
           <div className="w-10 h-10 rounded-full bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center flex-shrink-0">
-            <Icon icon="mdi:account" className="w-5 h-5 text-white" />
-          </div>
+              <Icon icon="mdi:account" className="w-5 h-5 text-white" />
+            </div>
           <div className="flex-1 min-w-0">
             <div className="flex items-start justify-between gap-2">
-              <div>
+            <div>
                 <p className="text-sm font-bold text-gray-900">{t.name}</p>
                 <p className="text-xs text-gray-500">+62{String(t.number).replace(/^\+?62|^0/, '')}</p>
               </div>
@@ -401,16 +448,16 @@ function TestimonialCard({ t, setModalImage, formatCurrency, primaryColor }) {
           </div>
         </div>
 
-        {t.image && imgUrl && (
+            {t.image && imgUrl && (
           <button
             type="button"
             onClick={() => setModalImage(imgUrl)}
             className="w-full mb-3 rounded-lg overflow-hidden border border-gray-200 hover:opacity-90 transition-opacity"
           >
-            <Image
-              src={imgUrl}
-              alt="bukti penarikan"
-              unoptimized
+                <Image
+                  src={imgUrl}
+                  alt="bukti penarikan"
+                  unoptimized
               width={400}
               height={200}
               className="w-full h-48 object-cover"
@@ -419,20 +466,20 @@ function TestimonialCard({ t, setModalImage, formatCurrency, primaryColor }) {
         )}
 
         <p className="text-sm text-gray-700 leading-relaxed mb-2">
-          {t.description}
-        </p>
+                {t.description}
+              </p>
 
         <div className="flex items-center gap-1.5 text-xs text-gray-400">
           <Icon icon="mdi:clock-outline" className="w-4 h-4" />
           <span>
-            {new Date(t.time.replace(' ', 'T')).toLocaleDateString('id-ID', {
-              day: '2-digit',
-              month: 'short',
+              {new Date(t.time.replace(' ', 'T')).toLocaleDateString('id-ID', { 
+                day: '2-digit', 
+                month: 'short', 
               year: 'numeric',
               hour: '2-digit',
               minute: '2-digit',
-            })}
-          </span>
+              })}
+            </span>
         </div>
       </div>
     );

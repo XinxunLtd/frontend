@@ -4,10 +4,12 @@ import { useRouter } from 'next/router';
 import { getTeamInvited, getBonusTasks, submitBonusTask } from '../utils/api';
 import { Icon } from '@iconify/react';
 import BottomNavbar from '../components/BottomNavbar';
+import Image from 'next/image';
 
 export default function Komisi() {
   const router = useRouter();
   const [applicationData, setApplicationData] = useState(null);
+  const [userData, setUserData] = useState(null);
   const [copied, setCopied] = useState({ code: false, link: false });
   const [reffCode, setReffCode] = useState('');
   const [teamStats, setTeamStats] = useState({
@@ -36,6 +38,14 @@ export default function Komisi() {
         const userStr = localStorage.getItem('user');
         if (userStr) {
           const user = JSON.parse(userStr);
+          setUserData({
+            name: user.name || '',
+            balance: user.balance || 0,
+            active: user.active || false,
+            level: user.level || 0,
+            total_invest: user.total_invest || 0,
+            total_invest_vip: user.total_invest_vip || 0
+          });
           if (user && user.reff_code) {
             setReffCode(user.reff_code);
           }
@@ -112,6 +122,7 @@ export default function Komisi() {
   const totalReferrals = (teamStats[1]?.count || 0);
   const totalActive = (teamStats[1]?.active || 0);
   const totalInvest = (teamStats[1]?.total_invest || 0);
+
   const primaryColor = '#fe7d17';
 
   return (
@@ -121,6 +132,37 @@ export default function Komisi() {
         <meta name="description" content={`${applicationData?.name || 'XinXun'} Referral`} />
         <link rel="icon" href="/favicon.ico" />
       </Head>
+
+      {/* Simple Top Bar */}
+      <div className="sticky top-0 z-40 bg-white border-b border-gray-200">
+        <div className="max-w-md mx-auto px-4 py-3 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Image 
+              src="/cover_logo.png"
+              alt="XinXun Logo"
+              width={120}
+              height={40}
+              className="object-contain"
+              priority
+            />
+          </div>
+          <div className="flex items-center gap-2">
+            <button 
+              onClick={() => router.push('/vip')}
+              className="px-3 py-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 flex items-center gap-1.5"
+            >
+              <Icon icon="mdi:crown" className="w-4 h-4" style={{ color: primaryColor }} />
+              <span className="text-sm font-semibold text-[#fe7d17]">VIP {userData?.level || 0}</span>
+            </button>
+            <button 
+              onClick={() => router.push('/portofolio')}
+              className="p-2 rounded-lg bg-gray-100 hover:bg-gray-200"
+            >
+              <Icon icon="mdi:chart-box" className="w-5 h-5" style={{ color: primaryColor }} />
+            </button>
+          </div>
+        </div>
+      </div>
 
       <div className="max-w-md mx-auto p-4">
         {/* Hero Stats - Big Numbers Center */}

@@ -206,17 +206,14 @@ export default function Dashboard() {
       <div className="sticky top-0 z-40 bg-white border-b border-gray-200">
         <div className="max-w-md mx-auto px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: primaryColor }}>
             <Image 
-                src="/main_logo.svg"
-                alt="XinXun Logo"
-                width={150}
-                height={150}
-                className="object-contain"
-                priority
-              />
-            </div>
-            <span className="font-bold text-gray-900">{applicationData?.name || 'XinXun'}</span>
+              src="/cover_logo.png"
+              alt="XinXun Logo"
+              width={120}
+              height={40}
+              className="object-contain"
+              priority
+            />
           </div>
           <div className="flex items-center gap-2">
             <button 

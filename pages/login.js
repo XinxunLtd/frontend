@@ -171,7 +171,7 @@ export default function Login() {
                             <div>
                                 <div className="w-full h-full flex items-center justify-center rounded-full bg-white">
                                     <Image
-                                        src="/logo.svg"
+                                        src="/cover_logo.png"
                                         alt="XinXun Logo"
                                         width={150}
                                         height={150}

@@ -60,8 +60,8 @@ export default function About() {
         <div className="mb-6 text-center bg-white rounded-2xl p-6 border border-gray-200">
           <div className="w-40 h-auto relative mx-auto mb-3">
             <Image
-              src="/main_logo.png"
-              alt="Logo"
+              src="/cover_logo.png"
+              alt="XinXun Logo"
               width={160}
               height={50}
               onError={(e) => { e.target.style.display = 'none'; }}

@@ -58,7 +58,7 @@ export default function PrivacyPolicy() {
             <div className="flex justify-center mb-6">
               <div className="bg-white rounded-xl p-4 border border-gray-200">
                 <Image
-                  src="/main_logo.png"
+                  src="/cover_logo.png"
                   alt="XinXun Logo"
                   width={200}
                   height={60}
