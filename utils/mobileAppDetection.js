@@ -18,7 +18,7 @@ export const isMobileApp = () => {
                window.matchMedia('(display-mode: standalone)').matches; // PWA standalone
   
   // Check for specific app indicators
-  const isInApp = userAgent.includes('ciroos') || // Custom app user agent
+  const isInApp = userAgent.includes('xinxun') || // Custom app user agent
                  userAgent.includes('mobile app') ||
                  document.referrer.includes('android-app://') ||
                  document.referrer.includes('ios-app://');
@@ -60,35 +60,36 @@ export const isDesktop = () => {
 export const isAndroidAppInstalled = async () => {
   if (typeof window === 'undefined') return false;
   if (!isAndroid()) return false;
-  
+
   try {
     // Try to create intent for the app
-    const intent = `intent://${window.location.host}${window.location.pathname}#Intent;scheme=https;package=ca.ciroos;end`;
-    
+    // Fixed package name untuk XinXun TWA
+    const intent = `intent://${window.location.host}${window.location.pathname}#Intent;scheme=https;package=us.xinxun.app;end`;
+
     // Create a temporary link to test if app can handle the intent
     const testLink = document.createElement('a');
     testLink.href = intent;
     testLink.style.display = 'none';
     document.body.appendChild(testLink);
-    
+
     // Try to trigger the intent
     testLink.click();
-    
+
     // Clean up
     document.body.removeChild(testLink);
-    
+
     // If we get here, the app might be installed
     // We'll use a timeout to detect if the page becomes hidden (app opened)
     return new Promise((resolve) => {
       let resolved = false;
-      
+
       const timeout = setTimeout(() => {
         if (!resolved) {
           resolved = true;
           resolve(false); // Assume not installed if no response
         }
       }, 1000);
-      
+
       // Listen for page visibility change (app might have opened)
       const handleVisibilityChange = () => {
         if (document.hidden && !resolved) {
@@ -98,9 +99,9 @@ export const isAndroidAppInstalled = async () => {
           resolve(true);
         }
       };
-      
+
       document.addEventListener('visibilitychange', handleVisibilityChange);
-      
+
       // Also listen for blur event
       const handleBlur = () => {
         if (!resolved) {
@@ -111,7 +112,7 @@ export const isAndroidAppInstalled = async () => {
           resolve(true);
         }
       };
-      
+
       window.addEventListener('blur', handleBlur);
     });
   } catch (error) {
