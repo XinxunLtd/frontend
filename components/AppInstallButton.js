@@ -55,75 +55,54 @@ export default function AppInstallButton({ applicationData, className = "" }) {
 
   const openApp = () => {
     if (deviceType.isAndroid) {
-      // Android: Coba buka aplikasi menggunakan intent atau link Play Store
-      if (applicationData?.link_app) {
-        // Coba gunakan intent untuk membuka aplikasi langsung
-        const packageName = extractPackageName(applicationData.link_app);
-        if (packageName) {
-          // Intent untuk membuka aplikasi jika terinstall
-          const intent = `intent://open#Intent;scheme=https;package=${packageName};end`;
-          
-          // Buat iframe tersembunyi untuk mencoba membuka aplikasi
-          const iframe = document.createElement('iframe');
-          iframe.style.display = 'none';
-          iframe.src = intent;
-          document.body.appendChild(iframe);
-          
-          // Hapus iframe setelah beberapa saat
-          setTimeout(() => {
-            document.body.removeChild(iframe);
-          }, 1000);
-          
-          // AUTO REDIRECT DISABLED - App belum di upload ke Play Store
-          // setTimeout(() => {
-          //   // Check if page is still visible (app didn't open)
-          //   if (!document.hidden) {
-          //     window.open(applicationData.link_app, '_blank');
-          //   }
-          // }, 1500);
-        } else {
-          // AUTO REDIRECT DISABLED - App belum di upload ke Play Store
-          // Jika tidak bisa extract package name, langsung buka Play Store
-          // window.open(applicationData.link_app, '_blank');
-        }
-      } else {
-        showNoLinkAlert();
+      // Android TWA: Gunakan fixed package name untuk membuka aplikasi
+      // Package name untuk TWA XinXun
+      const packageName = 'us.xinxun.app';
+
+      // Intent untuk membuka aplikasi jika terinstall
+      const intent = `intent://${window.location.host}${window.location.pathname}#Intent;scheme=https;package=${packageName};end`;
+
+      try {
+        // Coba buka aplikasi dengan intent
+        window.location.href = intent;
+      } catch (error) {
+        console.log('Error opening app:', error);
+        // Jika gagal, tampilkan pesan
+        setAlertConfig({
+          title: 'Tidak Dapat Membuka Aplikasi',
+          message: 'Tidak dapat membuka aplikasi. Pastikan aplikasi sudah terinstall dengan benar.',
+          type: 'error',
+          confirmText: 'OK'
+        });
+        setShowAlert(true);
       }
     } else if (deviceType.isIOS) {
       // iOS: Gunakan custom URL scheme atau fallback ke PWA
-      const customScheme = `xinxun://open`;
-      
-      // Try custom scheme first
-      const testLink = document.createElement('a');
-      testLink.href = customScheme;
-      testLink.style.display = 'none';
-      document.body.appendChild(testLink);
-      testLink.click();
-      document.body.removeChild(testLink);
-      
-      // Fallback setelah timeout
-      setTimeout(() => {
-        // Jika tidak bisa buka custom scheme, tampilkan guide
-        if (!document.hidden) {
-          showIOSInstallGuide();
-        }
-      }, 1500);
+      const customScheme = `xinxun://${window.location.pathname}`;
+
+      try {
+        // Try custom scheme first
+        window.location.href = customScheme;
+
+        // Fallback setelah timeout
+        setTimeout(() => {
+          // Jika tidak bisa buka custom scheme, tampilkan guide
+          if (!document.hidden) {
+            showIOSInstallGuide();
+          }
+        }, 1500);
+      } catch (error) {
+        console.log('Error opening app:', error);
+        showIOSInstallGuide();
+      }
     }
   };
 
   const handleInstallApp = () => {
-    // AUTO REDIRECT DISABLED - App belum di upload ke Play Store
-    // Tampilkan alert bahwa app belum tersedia
+    // Jika Android dan ada link_app, download APK langsung (TWA)
     if (deviceType.isAndroid && applicationData?.link_app) {
-      // window.open(applicationData.link_app, '_blank');
-      // return;
-      setAlertConfig({
-        title: 'Aplikasi Sedang Dalam Proses Upload',
-        message: 'Aplikasi Android kami sedang dalam proses upload ke Google Play Store.\n\nMohon tunggu beberapa waktu lagi, kami akan segera mengumumkan jika sudah tersedia.\n\nUntuk saat ini, Anda dapat tetap menggunakan versi web.',
-        type: 'info',
-        confirmText: 'Mengerti'
-      });
-      setShowAlert(true);
+      // Download APK langsung
+      window.open(applicationData.link_app, '_blank');
       return;
     }
 
@@ -143,15 +122,6 @@ export default function AppInstallButton({ applicationData, className = "" }) {
     showNoLinkAlert();
   };
 
-  // Helper function untuk extract package name dari Play Store URL
-  const extractPackageName = (playStoreUrl) => {
-    if (!playStoreUrl) return null;
-    
-    // Format: https://play.google.com/store/apps/details?id=com.example.app
-    const match = playStoreUrl.match(/[?&]id=([^&]+)/);
-    return match ? match[1] : null;
-  };
-
   const showIOSInstallGuide = () => {
     setAlertConfig({
       title: 'Install Aplikasi pada Perangkat iOS',
@@ -165,7 +135,7 @@ export default function AppInstallButton({ applicationData, className = "" }) {
   const showDesktopAlert = () => {
     setAlertConfig({
       title: 'Install Hanya untuk Mobile',
-      message: 'Aplikasi hanya tersedia untuk perangkat mobile (Android & iOS).\n\nUntuk Android: Download dari Play Store\nUntuk iOS: Gunakan "Add to Home Screen" di Safari',
+      message: 'Aplikasi hanya tersedia untuk perangkat mobile (Android & iOS).\n\nUntuk Android: Download APK langsung dari link yang tersedia\nUntuk iOS: Gunakan "Add to Home Screen" di Safari',
       type: 'warning',
       confirmText: 'Mengerti'
     });
@@ -216,9 +186,9 @@ export default function AppInstallButton({ applicationData, className = "" }) {
       };
     } else if (deviceType.isAndroid) {
       return {
-        icon: 'ri:google-play-fill',
-        text: 'INSTALL APLIKASI',
-        subtitle: 'Google Play Store',
+        icon: 'mdi:android',
+        text: 'DOWNLOAD APK',
+        subtitle: 'Download Langsung',
         isLoading: false
       };
     } else {
@@ -252,7 +222,7 @@ export default function AppInstallButton({ applicationData, className = "" }) {
                 }}
               >
                 <Icon
-                  icon={isAppInstalledState ? 'mdi:check-circle' : (deviceType.isAndroid ? 'ri:google-play-fill' : deviceType.isIOS ? 'mdi:apple' : 'mdi:cellphone-arrow-down')}
+                  icon={isAppInstalledState ? 'mdi:check-circle' : (deviceType.isAndroid ? 'mdi:android' : deviceType.isIOS ? 'mdi:apple' : 'mdi:cellphone-arrow-down')}
                   className={`w-7 h-7 ${buttonConfig.isLoading ? 'animate-spin' : ''}`}
                   style={{ color: isAppInstalledState ? '#16a34a' : '#fff' }}
                 />
@@ -265,7 +235,7 @@ export default function AppInstallButton({ applicationData, className = "" }) {
                   {isAppInstalledState
                     ? 'Aplikasi Terinstall'
                     : deviceType.isAndroid
-                      ? 'Download dari Play Store'
+                      ? 'Download APK Langsung'
                       : deviceType.isIOS
                         ? 'Add to Home Screen'
                         : 'Untuk perangkat mobile'
@@ -290,7 +260,7 @@ export default function AppInstallButton({ applicationData, className = "" }) {
                   : deviceType.isIOS
                     ? '📱 Install aplikasi untuk pengalaman lebih cepat dan kemudahan akses.'
                     : deviceType.isAndroid
-                      ? '📲 Download aplikasi resmi dari Google Play Store untuk fitur lengkap.'
+                      ? '📲 Download aplikasi APK langsung untuk pengalaman aplikasi native.'
                       : '💻 Aplikasi mobile tersedia untuk perangkat Android & iOS.'
                 }
               </p>
@@ -317,7 +287,7 @@ export default function AppInstallButton({ applicationData, className = "" }) {
                   : isAppInstalledState
                     ? 'Buka Aplikasi'
                     : deviceType.isAndroid
-                      ? 'Install dari Play Store'
+                      ? 'Download APK'
                       : deviceType.isIOS
                         ? 'Panduan Install'
                         : 'Install Aplikasi'
