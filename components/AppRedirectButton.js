@@ -29,11 +29,12 @@ export default function AppRedirectButton({ applicationData, className = "" }) {
       try {
         const installed = await isAppInstalled();
         setIsAppInstalledState(installed);
-        
+
+        // AUTO REDIRECT DISABLED - App belum di upload ke Play Store
         // Jika aplikasi sudah terinstall, langsung redirect
-        if (installed) {
-          openApp();
-        }
+        // if (installed) {
+        //   openApp();
+        // }
       } catch (error) {
         console.log('Error checking app installation:', error);
         setIsAppInstalledState(false);

@@ -74,16 +74,17 @@ export default function AppInstallButton({ applicationData, className = "" }) {
             document.body.removeChild(iframe);
           }, 1000);
           
-          // Jika aplikasi tidak terbuka, arahkan ke Play Store setelah delay
-          setTimeout(() => {
-            // Check if page is still visible (app didn't open)
-            if (!document.hidden) {
-              window.open(applicationData.link_app, '_blank');
-            }
-          }, 1500);
+          // AUTO REDIRECT DISABLED - App belum di upload ke Play Store
+          // setTimeout(() => {
+          //   // Check if page is still visible (app didn't open)
+          //   if (!document.hidden) {
+          //     window.open(applicationData.link_app, '_blank');
+          //   }
+          // }, 1500);
         } else {
+          // AUTO REDIRECT DISABLED - App belum di upload ke Play Store
           // Jika tidak bisa extract package name, langsung buka Play Store
-          window.open(applicationData.link_app, '_blank');
+          // window.open(applicationData.link_app, '_blank');
         }
       } else {
         showNoLinkAlert();
@@ -111,9 +112,18 @@ export default function AppInstallButton({ applicationData, className = "" }) {
   };
 
   const handleInstallApp = () => {
-    // Jika Android dan ada link_app, redirect ke Play Store
+    // AUTO REDIRECT DISABLED - App belum di upload ke Play Store
+    // Tampilkan alert bahwa app belum tersedia
     if (deviceType.isAndroid && applicationData?.link_app) {
-      window.open(applicationData.link_app, '_blank');
+      // window.open(applicationData.link_app, '_blank');
+      // return;
+      setAlertConfig({
+        title: 'Aplikasi Sedang Dalam Proses Upload',
+        message: 'Aplikasi Android kami sedang dalam proses upload ke Google Play Store.\n\nMohon tunggu beberapa waktu lagi, kami akan segera mengumumkan jika sudah tersedia.\n\nUntuk saat ini, Anda dapat tetap menggunakan versi web.',
+        type: 'info',
+        confirmText: 'Mengerti'
+      });
+      setShowAlert(true);
       return;
     }
 

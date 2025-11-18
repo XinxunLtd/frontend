@@ -33,13 +33,13 @@ export default function CustomAlert({
   const getIconAndColor = () => {
     switch (type) {
       case 'success':
-        return { icon: 'mdi:check-circle', color: 'text-green-400', bgColor: 'bg-green-500/10' };
+        return { icon: 'mdi:check-circle', color: 'text-green-600', bgColor: 'bg-green-50' };
       case 'warning':
-        return { icon: 'mdi:alert-circle', color: 'text-yellow-400', bgColor: 'bg-yellow-500/10' };
+        return { icon: 'mdi:alert-circle', color: 'text-yellow-600', bgColor: 'bg-yellow-50' };
       case 'error':
-        return { icon: 'mdi:close-circle', color: 'text-red-400', bgColor: 'bg-red-500/10' };
+        return { icon: 'mdi:close-circle', color: 'text-red-600', bgColor: 'bg-red-50' };
       default:
-        return { icon: 'mdi:information', color: 'text-blue-400', bgColor: 'bg-blue-500/10' };
+        return { icon: 'mdi:information', color: 'text-blue-600', bgColor: 'bg-blue-50' };
     }
   };
 
@@ -55,19 +55,19 @@ export default function CustomAlert({
       
       {/* Modal */}
       <div className="relative w-full max-w-md mx-auto">
-        <div className="absolute -inset-0.5 bg-gradient-to-r from-[#F45D16] to-[#0058BC] rounded-2xl blur opacity-20"></div>
-        <div className="relative bg-gradient-to-br from-[#1A1A1A] to-[#0F0F0F] rounded-2xl p-6 border border-white/10">
+        <div className="absolute -inset-0.5 bg-gradient-to-r from-[#F45D16] to-[#0058BC] rounded-2xl blur opacity-10"></div>
+        <div className="relative bg-white rounded-2xl p-6 border border-gray-200 shadow-xl">
           {/* Header */}
           <div className="flex items-center gap-3 mb-4">
             <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${bgColor}`}>
               <Icon icon={icon} className={`w-6 h-6 ${color}`} />
             </div>
-            <h3 className="text-white font-bold text-lg">{title}</h3>
+            <h3 className="text-gray-900 font-bold text-lg">{title}</h3>
           </div>
-          
+
           {/* Message */}
           <div className="mb-6">
-            <p className="text-white/80 text-sm leading-relaxed whitespace-pre-line">
+            <p className="text-gray-700 text-sm leading-relaxed whitespace-pre-line">
               {message}
             </p>
           </div>
@@ -77,7 +77,7 @@ export default function CustomAlert({
             {showCancel && (
               <button
                 onClick={onClose}
-                className="px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-xl transition-all duration-300 border border-white/20"
+                className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl transition-all duration-300 border border-gray-200"
               >
                 {cancelText}
               </button>
