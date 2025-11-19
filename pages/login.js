@@ -154,14 +154,38 @@ export default function Login() {
         }
     }, [router]);
 
+    const [ogImageUrl, setOgImageUrl] = useState('/main_logo.png');
+    const [pageUrl, setPageUrl] = useState('');
+
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const baseUrl = window.location.origin;
+            setOgImageUrl(`${baseUrl}/main_logo.png`);
+        }
+    }, []);
+
     const primaryColor = '#fe7d17';
 
     return (
         <>
             <Head>
                 <title>{applicationData?.name || 'XinXun'} | Login</title>
-                <meta name="description" content={`${applicationData?.name || 'XinXun'} Description`} />
+                <meta name="description" content={`Masuk untuk melanjutkan ke dashboard ${applicationData?.name || 'XinXun'} Anda dan kelola investasi Anda.`} />
                 <link rel="icon" href="/favicon.ico" />
+        
+                {/* Open Graph / Social Media */}
+                <meta property="og:type" content="website" />
+                <meta property="og:title" content={`${applicationData?.name || 'XinXun'} | Login`} />
+                <meta property="og:description" content={`Masuk untuk melanjutkan ke dashboard ${applicationData?.name || 'XinXun'} Anda dan kelola investasi Anda.`} />
+                <meta property="og:image" content={ogImageUrl} />
+                <meta property="og:url" content={pageUrl || (typeof window !== 'undefined' ? window.location.href : '')} />
+                <meta property="og:site_name" content={applicationData?.name || 'XinXun'} />
+        
+                {/* Twitter Card */}
+                <meta name="twitter:card" content="summary_large_image" />
+                <meta name="twitter:title" content={`${applicationData?.name || 'XinXun'} | Login`} />
+                <meta name="twitter:description" content={`Masuk untuk melanjutkan ke dashboard ${applicationData?.name || 'XinXun'} Anda dan kelola investasi Anda.`} />
+                <meta name="twitter:image" content={ogImageUrl} />
             </Head>
 
             <div className="min-h-screen flex items-center justify-center bg-white px-4">

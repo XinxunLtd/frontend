@@ -231,12 +231,48 @@ export default function Register() {
   const isFormValid = Object.values(formValidation).every(Boolean) && termsAgreed;
   const primaryColor = '#fe7d17';
 
+  // Get referral code from query
+  const referralCode = router.query?.reff || '';
+  
+  // Generate description based on referral code
+  const getDescription = () => {
+    if (referralCode) {
+      return `Bergabung bersama saya di XinXun dan mulai berinvestasi bersama saya, Gunakan kode '${referralCode}' untuk keuntungan maksimal`;
+    }
+    return 'Mulailah berinvestasi di XinXun dan raih keuntungan maksimal.';
+  };
+
+  const [ogImageUrl, setOgImageUrl] = useState('/main_logo.png');
+  const [pageUrl, setPageUrl] = useState('');
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const baseUrl = window.location.origin;
+      setOgImageUrl(`${baseUrl}/main_logo.png`);
+      setPageUrl(window.location.href);
+    }
+  }, [router.query]);
+
   return (
     <>
       <Head>
         <title>{applicationData?.name || 'XinXun'} | Register</title>
-        <meta name="description" content={`${applicationData?.name || 'XinXun'} Description`} />
+        <meta name="description" content={getDescription()} />
         <link rel="icon" href="/favicon.ico" />
+        
+        {/* Open Graph / Social Media */}
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content={`${applicationData?.name || 'XinXun'} | Register`} />
+        <meta property="og:description" content={getDescription()} />
+        <meta property="og:image" content={ogImageUrl} />
+        <meta property="og:url" content={pageUrl || (typeof window !== 'undefined' ? window.location.href : '')} />
+        <meta property="og:site_name" content={applicationData?.name || 'XinXun'} />
+        
+        {/* Twitter Card */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={`${applicationData?.name || 'XinXun'} | Register`} />
+        <meta name="twitter:description" content={getDescription()} />
+        <meta name="twitter:image" content={ogImageUrl} />
       </Head>
       
       <div className="min-h-screen flex items-center justify-center bg-white px-4 py-8">
