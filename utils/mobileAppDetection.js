@@ -64,6 +64,7 @@ export const isAndroidAppInstalled = async () => {
   try {
     // Try to create intent for the app
     // Fixed package name untuk XinXun TWA
+    //const intent = `intent://${window.location.host}${window.location.pathname}#Intent;scheme=https;package=us.xinxun.app;end`;
 
     // Create a temporary link to test if app can handle the intent
     const testLink = document.createElement('a');

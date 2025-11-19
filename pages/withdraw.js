@@ -23,7 +23,7 @@ const Withdraw = () => {
   const [isWithdrawalAvailable, setIsWithdrawalAvailable] = useState(false);
   const [withdrawalMessage, setWithdrawalMessage] = useState('');
 
-  // Check if withdrawal is available (Monday-Saturday, 12:00-17:00 WIB)
+  // Check if withdrawal is available (Monday-Saturday, 09:00-17:00 WIB)
   const checkWithdrawalAvailability = () => {
     const now = new Date();
 
@@ -39,8 +39,8 @@ const Withdraw = () => {
       return false;
     }
 
-    // Check if it's within working hours (12:00 - 17:00)
-    if (hours < 12 || hours >= 17) {
+    // Check if it's within working hours (09:00 - 17:00)
+    if (hours < 9 || hours > 17) {
       setIsWithdrawalAvailable(false);
       setWithdrawalMessage('Penarikan hanya dapat dilakukan pada jam kerja');
       return false;
@@ -317,7 +317,7 @@ const Withdraw = () => {
                   <Icon icon="mdi:clock-alert-outline" className="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5" />
                   <div>
                     <p className="text-yellow-800 text-sm font-semibold mb-1">{withdrawalMessage}</p>
-                    <p className="text-yellow-700 text-xs">Penarikan dana tersedia Senin-Sabtu pukul 12:00 - 17:00 WIB</p>
+                    <p className="text-yellow-700 text-xs">Penarikan dana tersedia Senin-Sabtu pukul 09:00 - 17:00 WIB</p>
                   </div>
                 </div>
               )}
@@ -405,7 +405,7 @@ const Withdraw = () => {
               { icon: "mdi:cash-minus", text: `Penarikan memakan biaya ${fee}% yang dipotong langsung dari jumlah penarikan` },
               { icon: "mdi:wallet-outline", text: "Pengguna dapat menarik seluruh saldo tersedia tanpa syarat apapun" },
               { icon: "mdi:calendar-clock", text: "Pengguna hanya dapat melakukan penarikan 1x per hari" },
-              { icon: "mdi:clock-outline", text: "Penarikan dana akan terbuka setiap hari Senin hingga Sabtu pada pukul 12.00 - 17.00 WIB" },
+              { icon: "mdi:clock-outline", text: "Penarikan dana akan terbuka setiap hari Senin hingga Sabtu pada pukul 09:00 - 17:00 WIB" },
               { icon: "mdi:lightning-bolt", text: "Seluruh Penarikan akan diproses dengan sistem batch secara otomatis pada pukul 17:00 - 19:00 WIB" }
             ].map((item, index) => (
               <div key={index} className="flex items-start gap-2">
