@@ -21,6 +21,7 @@ export default function TransactionsManagement() {
     limit: 25
   });
   const [searchInput, setSearchInput] = useState('');
+  const [userIdInput, setUserIdInput] = useState('');
   const [totalTransactions, setTotalTransactions] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
   const [stats, setStats] = useState({
@@ -47,10 +48,9 @@ export default function TransactionsManagement() {
       if (filters.type && filters.type !== 'all') params.push(`type=${filters.type}`);
       if (filters.status && filters.status !== 'all') params.push(`status=${filters.status}`);
       if (filters.search) params.push(`search=${encodeURIComponent(filters.search)}`);
-      if (filters.userId) params.push(`userId=${filters.userId}`);
       if (filters.dateFrom) params.push(`start_date=${filters.dateFrom}`);
       if (filters.dateTo) params.push(`end_date=${filters.dateTo}`);
-      
+      if (userIdInput) params.push(`userId=${userIdInput}`);
       const query = params.length ? `?${params.join('&')}` : '';
       const res = await adminRequest(`/transactions${query}`, { method: 'GET' });
       
@@ -248,8 +248,8 @@ export default function TransactionsManagement() {
             <label className="block text-sm text-gray-400 mb-2">ID Pengguna</label>
             <input
               type="text"
-              value={filters.userId}
-              onChange={(e) => handleFilterChange('userId', e.target.value)}
+              value={userIdInput}
+              onChange={(e) => setUserIdInput(e.target.value)}
               className="w-full bg-white/10 border border-white/20 text-white rounded-2xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
               placeholder="Cari berdasarkan ID pengguna"
             />
@@ -322,6 +322,7 @@ export default function TransactionsManagement() {
             onClick={() => {
               setFilters({ type: 'all', status: 'all', search: '', dateFrom: '', dateTo: '', page: 1, limit: 25 });
               setSearchInput('');
+              setUserIdInput('');
             }}
             className="bg-white/10 hover:bg-white/20 text-white px-6 py-3 rounded-2xl flex items-center gap-2 transition-all"
           >
