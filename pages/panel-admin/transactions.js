@@ -14,6 +14,7 @@ export default function TransactionsManagement() {
     type: 'all',
     status: 'all',
     search: '',
+    userId: '',
     dateFrom: '',
     dateTo: '',
     page: 1,
@@ -46,6 +47,7 @@ export default function TransactionsManagement() {
       if (filters.type && filters.type !== 'all') params.push(`type=${filters.type}`);
       if (filters.status && filters.status !== 'all') params.push(`status=${filters.status}`);
       if (filters.search) params.push(`search=${encodeURIComponent(filters.search)}`);
+      if (filters.userId) params.push(`userId=${filters.userId}`);
       if (filters.dateFrom) params.push(`start_date=${filters.dateFrom}`);
       if (filters.dateTo) params.push(`end_date=${filters.dateTo}`);
       
@@ -234,11 +236,23 @@ export default function TransactionsManagement() {
                 value={searchInput}
                 onChange={(e) => setSearchInput(e.target.value)}
                 onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
-                placeholder="Cari pengguna, referensi..."
+                placeholder="Cari berdasarkan referensi."
                 className="w-full bg-white/10 border border-white/20 text-white rounded-2xl px-4 py-3 pl-12 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all dark-select"
               />
               <Icon icon="mdi:magnify" className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
             </div>
+          </div>
+
+          {/* User ID Filter */}
+          <div>
+            <label className="block text-sm text-gray-400 mb-2">ID Pengguna</label>
+            <input
+              type="text"
+              value={filters.userId}
+              onChange={(e) => handleFilterChange('userId', e.target.value)}
+              className="w-full bg-white/10 border border-white/20 text-white rounded-2xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+              placeholder="Cari berdasarkan ID pengguna"
+            />
           </div>
 
           {/* Type Filter */}
