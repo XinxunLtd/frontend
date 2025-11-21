@@ -20,12 +20,12 @@ export default function VIPPage() {
   };
 
   const VIP_BENEFITS = {
-    0: ['Akses produk Monitor', 'Investasi tanpa batas'],
-    1: ['Unlock Insight 1', 'Profit langsung 140%', 'Semua benefit VIP 0'],
-    2: ['Unlock Insight 2', 'Profit langsung 210%', 'Semua benefit VIP 1'],
-    3: ['Unlock Insight 3', 'Unlock ALL AutoPilot', 'Profit hingga 235%', 'Semua benefit VIP 2'],
-    4: ['Unlock Insight 4', 'Profit langsung 280%', 'Semua benefit VIP 3'],
-    5: ['Unlock Insight 5', 'SEMUA produk tersedia', 'VIP ULTIMATE', 'Maximum benefits']
+    0: ['Akses produk Router', 'Investasi dengan aman', 'Investasi tanpa batas'],
+    1: ['Semua benefit VIP 0', 'Membuka Mifi 1', 'Profit hingga 140%'],
+    2: ['Semua benefit VIP 1', 'Membuka Mifi 2', 'Profit hingga 210%'],
+    3: ['Semua benefit VIP 2', 'Membuka Mifi 3', 'Membuka semua produk Powerbank', 'Profit hingga 235%'],
+    4: ['Semua benefit VIP 3', 'Membuka Mifi 4', 'Profit hingga 280%'],
+    5: ['Semua benefit VIP 4', 'Semua produk tersedia']
   };
 
   useEffect(() => {
@@ -266,16 +266,16 @@ export default function VIPPage() {
             <div className="flex items-start gap-3 p-3 rounded-xl bg-green-50 border border-green-200">
               <Icon icon="mdi:check-circle" className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
               <div>
-                <p className="text-sm font-semibold text-green-700 mb-1">Investasi di Produk Monitor</p>
-                <p className="text-xs text-green-600">Produk dengan profit terkunci yang menambah level VIP</p>
+                <p className="text-sm font-semibold text-green-700 mb-1">Investasi pada produk Router</p>
+                <p className="text-xs text-green-600">Produk dengan profit terkunci yang menaikkan level VIP</p>
               </div>
             </div>
 
             <div className="flex items-start gap-3 p-3 rounded-xl bg-red-50 border border-red-200">
               <Icon icon="mdi:close-circle" className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
               <div>
-                <p className="text-sm font-semibold text-red-700 mb-1">Insight & AutoPilot</p>
-                <p className="text-xs text-red-600">Produk ini TIDAK menambah level VIP (profit langsung)</p>
+                <p className="text-sm font-semibold text-red-700 mb-1">Mifi & Powerbank</p>
+                <p className="text-xs text-red-600">Produk ini TIDAK menaikkan level VIP (profit langsung)</p>
               </div>
             </div>
           </div>
@@ -284,7 +284,7 @@ export default function VIPPage() {
             <div className="flex items-start gap-2">
               <Icon icon="mdi:lightbulb" className="w-5 h-5 flex-shrink-0 mt-0.5" style={{ color: primaryColor }} />
               <p className="text-xs text-gray-600 leading-relaxed">
-                <span className="font-semibold text-gray-900">Tips:</span> Investasi Monitor memberikan return total saat selesai DAN menaikkan level VIP. Semakin tinggi level, semakin banyak produk eksklusif!
+                <span className="font-semibold text-gray-900">Tips:</span> Investasi Router memberikan return total saat selesai dan menaikkan level VIP. Semakin tinggi level, semakin banyak produk eksklusif!
               </p>
             </div>
           </div>
@@ -294,8 +294,8 @@ export default function VIPPage() {
             className="w-full py-3 rounded-xl font-semibold text-white flex items-center justify-center gap-2"
             style={{ backgroundColor: primaryColor }}
           >
-            <Icon icon="mdi:monitor-dashboard" className="w-5 h-5" />
-            Lihat Produk Monitor
+            <Icon icon="mdi:router-network" className="w-5 h-5" />
+            Lihat Produk Router
           </button>
         </div>
 
