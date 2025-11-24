@@ -138,7 +138,7 @@ export default function Komisi() {
         <div className="max-w-md mx-auto px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Image 
-              src="/cover_logo.png"
+              src="/new_logo.png"
               alt="XinXun Logo"
               width={120}
               height={40}
