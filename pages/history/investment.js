@@ -9,7 +9,6 @@ import BottomNavbar from '../../components/BottomNavbar';
 export default function RiwayatDeposit() {
   const router = useRouter();
   const [investments, setInvestments] = useState([]);
-  const [paymentStatus, setPaymentStatus] = useState({}); // { order_id: { status, expired_at, payment_method, product } }
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
@@ -134,10 +133,8 @@ export default function RiwayatDeposit() {
             }
           })
         );
-        setPaymentStatus(statusObj);
       } else {
         setInvestments([]);
-        setPaymentStatus({});
         setTotalInvestments(0);
         setTotalPages(1);
         setError(res.message || 'Gagal memuat riwayat investasi');
@@ -146,7 +143,6 @@ export default function RiwayatDeposit() {
       setError('Terjadi kesalahan. Silakan coba lagi.');
       console.error('Error fetching investment history:', err);
       setInvestments([]);
-      setPaymentStatus({});
       setTotalInvestments(0);
       setTotalPages(1);
     }
@@ -314,8 +310,8 @@ export default function RiwayatDeposit() {
             <p className="text-lg font-bold text-green-600">
               Rp {formatCurrency(
                 investments.reduce((sum, inv) => {
-                  const status = paymentStatus[inv.order_id]?.status || inv.status;
-                  return ['Success', 'Completed', 'Running'].includes(status)
+                  const status = inv.status;
+                  return ['Success'].includes(status)
                     ? sum + (inv.amount || 0)
                     : sum;
                 }, 0)
@@ -371,9 +367,8 @@ export default function RiwayatDeposit() {
         ) : (
           <div className="space-y-3">
             {investments.map((investment) => {
-              const paymentInfo = paymentStatus[investment.order_id] || {};
-              const status = paymentInfo.status || investment.status;
-              const showPayButton = shouldShowPayButton(status, paymentInfo.expired_at);
+              const status = investment.status;
+              const showPayButton = shouldShowPayButton(status, investment.expired_at);
 
               return (
                 <div key={investment.id || investment.order_id} className="bg-white rounded-lg border border-gray-100 overflow-hidden hover:shadow-sm transition-shadow">
@@ -384,11 +379,11 @@ export default function RiwayatDeposit() {
                         <Icon icon="mdi:chart-line" className="w-4 h-4 text-white" />
                       </div>
                       <div>
-                        <p className="text-xs font-bold text-gray-900 truncate">{paymentInfo.product || 'Paket Investasi'}</p>
+                        <p className="text-xs font-bold text-gray-900 truncate">{investment.product || 'Paket Investasi'}</p>
                         <p className="text-[10px] text-gray-500">#{investment.order_id}</p>
                       </div>
                     </div>
-                    {getStatusBadge(status, paymentInfo.expired_at)}
+                    {getStatusBadge(status, investment.expired_at)}
                   </div>
 
                   {/* Content */}
@@ -423,11 +418,11 @@ export default function RiwayatDeposit() {
                           <Icon icon="mdi:credit-card-outline" className="w-5 h-5" />
                           <span>Bayar Sekarang</span>
                         </button>
-                        {paymentInfo.expired_at && (
+                        {investment.expired_at && (
                           <div className="flex items-center justify-center gap-1.5 mt-2 px-3 py-1.5 bg-yellow-50 border border-yellow-100 rounded-lg">
                             <Icon icon="mdi:clock-alert-outline" className="w-3.5 h-3.5 text-yellow-700" />
                             <span className="text-[10px] text-yellow-700 font-semibold">
-                              Batas: {formatDate(paymentInfo.expired_at)}
+                              Batas: {formatDate(investment.expired_at)}
                             </span>
                           </div>
                         )}
