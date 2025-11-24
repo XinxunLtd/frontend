@@ -205,9 +205,6 @@ export default function Login() {
                                 </div>
                             </div>
                         </div>
-                        <h1 className="text-xl font-semibold text-neutral-900">
-                            {applicationData?.name || 'XinXun'}
-                        </h1>
                         <p className="mt-1 text-sm text-neutral-500">
                             Masuk untuk melanjutkan ke dashboard Anda
                         </p>

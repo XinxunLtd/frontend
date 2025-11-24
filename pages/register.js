@@ -292,9 +292,6 @@ export default function Register() {
                 </div>
               </div>
             </div>
-            <h1 className="text-xl font-semibold text-neutral-900">
-              {applicationData?.name || 'XinXun'}
-            </h1>
             <p className="mt-1 text-sm text-neutral-500">
               Daftar akun baru dan mulai berinvestasi.
             </p>
