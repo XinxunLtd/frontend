@@ -240,7 +240,7 @@ export default function UploadWithdrawal() {
                         </li>
                         <li className="flex items-start gap-2 text-xs text-gray-700">
                             <Icon icon="mdi:check" className="w-4 h-4 text-orange-600 flex-shrink-0 mt-0.5" />
-                            <span>Format JPG/PNG, maksimal 2MB</span>
+                            <span>Format JPG/PNG/HEIC/HEIF/WEBP, maksimal 10MB</span>
                         </li>
                     </ul>
                 </div>
@@ -313,7 +313,7 @@ export default function UploadWithdrawal() {
                                     <p className={`text-sm font-semibold ${canUpload && !isSubmitting ? 'text-gray-900' : 'text-gray-400'}`}>
                                         Pilih Gambar
                                     </p>
-                                    <p className="text-xs text-gray-500">JPG/PNG, maks 2MB</p>
+                                    <p className="text-xs text-gray-500">JPG/PNG/HEIC/HEIF/WEBP, maks 10MB</p>
                                 </button>
                             )}
 

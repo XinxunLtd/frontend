@@ -406,7 +406,7 @@ const Withdraw = () => {
               { icon: "mdi:wallet-outline", text: "Pengguna dapat menarik seluruh saldo tersedia tanpa syarat apapun" },
               { icon: "mdi:calendar-clock", text: "Pengguna hanya dapat melakukan penarikan 1x per hari" },
               { icon: "mdi:clock-outline", text: "Penarikan dana akan terbuka setiap hari Senin hingga Sabtu pada pukul 09:00 - 17:00 WIB" },
-              { icon: "mdi:lightning-bolt", text: "Seluruh Penarikan akan diproses dengan sistem batch secara otomatis pada pukul 17:00 - 19:00 WIB" }
+              { icon: "mdi:lightning-bolt", text: "Jika informasi Bank Anda sesuai, maka penarikan akan diproses secara otomatis" }
             ].map((item, index) => (
               <div key={index} className="flex items-start gap-2">
                 <Icon icon={item.icon} className="text-blue-600 w-4 h-4 mt-0.5 flex-shrink-0" />
