@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { Icon } from '@iconify/react';
-import { getInvestmentHistory, getPaymentByOrderId } from '../../utils/api';
+import { getInvestmentHistory } from '../../utils/api';
 import BottomNavbar from '../../components/BottomNavbar';
 
 export default function RiwayatDeposit() {
@@ -101,38 +101,6 @@ export default function RiwayatDeposit() {
           setTotalInvestments(fetchedInvestments.length);
           setTotalPages(Math.max(1, Math.ceil(fetchedInvestments.length / limit)));
         }
-
-        // Ambil status pembayaran untuk setiap investasi
-        const statusObj = {};
-        await Promise.all(
-          fetchedInvestments.map(async (inv) => {
-            try {
-              const payRes = await getPaymentByOrderId(inv.order_id);
-              if (payRes.success && payRes.data) {
-                statusObj[inv.order_id] = {
-                  status: payRes.data.status,
-                  expired_at: payRes.data.expired_at,
-                  payment_method: payRes.data.payment_method,
-                  product: payRes.data.product
-                };
-              } else {
-                statusObj[inv.order_id] = {
-                  status: inv.status || 'Unknown',
-                  expired_at: null,
-                  payment_method: null,
-                  product: null
-                };
-              }
-            } catch {
-              statusObj[inv.order_id] = {
-                status: inv.status || 'Unknown',
-                expired_at: null,
-                payment_method: null,
-                product: null
-              };
-            }
-          })
-        );
       } else {
         setInvestments([]);
         setTotalInvestments(0);
