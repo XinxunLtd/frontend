@@ -35,7 +35,7 @@ export default function Team() {
     setLoading(true);
     try {
       const statsRes = await getTeamInvitedByLevel(level);
-      const stats = statsRes?.data?.[level] || { active: 0, count: 0, total_invest: 0 };
+      const stats = statsRes?.data?.[level] || { active: 0, inactive: 0, count: 0, total_invest: 0 };
 
       const queryParams = {
         limit, 
@@ -82,7 +82,7 @@ export default function Team() {
           totalInvestment: stats.total_invest || 0,
           totalMembers: stats.count || 0,
           activeMembers: stats.active || 0,
-          inactiveMembers: stats.count - stats.inactive || 0,
+          inactiveMembers: stats.inactive || 0,
           members,
           pagination,
         });
@@ -223,7 +223,7 @@ export default function Team() {
             </div>
             <div className="w-px h-12 bg-gray-300" />
           <div>
-            <p className="text-3xl font-bold text-gray-900">{teamData.pagination.total_rows}</p>
+            <p className="text-3xl font-bold text-gray-900">{teamData.totalMembers}</p>
             <p className="text-xs text-gray-500 mt-1">Total</p>
           </div>
           </div>
