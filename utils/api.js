@@ -461,7 +461,7 @@ export const updateUserProfile = async ({ name, profile }) => {
   if (profile) {
     formData.append('profile', profile);
   }
-  const res = await fetch(`${BASE_URL}/v3/users/profile`, {
+  const res = await fetch(`${BASE_URL}/users/profile`, {
     method: 'PUT',
     headers: {
       'Authorization': `Bearer ${token}`,
@@ -479,5 +479,5 @@ export const updateUserProfile = async ({ name, profile }) => {
 
 // Delete user profile image
 export const deleteUserProfile = async () => {
-  return apiRequest('/v3/users/profile', { method: 'DELETE' });
+  return apiRequest('/users/profile', { method: 'DELETE' });
 };

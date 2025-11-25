@@ -13,7 +13,9 @@ export default function Team() {
   const [teamData, setTeamData] = useState({
     level: null,
     totalInvestment: 0,
+    totalMembers: 0,
     activeMembers: 0,
+    inactiveMembers: 0,
     members: [],
     pagination: {
       limit: 10,
@@ -78,7 +80,9 @@ export default function Team() {
         setTeamData({
           level: responseLevel,
           totalInvestment: stats.total_invest || 0,
+          totalMembers: stats.count || 0,
           activeMembers: stats.active || 0,
+          inactiveMembers: stats.count - stats.inactive || 0,
           members,
           pagination,
         });
@@ -88,7 +92,9 @@ export default function Team() {
         setTeamData({ 
           level: null,
           totalInvestment: 0, 
+          totalMembers: 0,
           activeMembers: 0, 
+          inactiveMembers: 0,
           members: [], 
           pagination: {
             limit: limit,
@@ -248,7 +254,7 @@ export default function Team() {
             }`}
             style={filterStatus === 'all' ? { backgroundColor: primaryColor } : {}}
           >
-            Semua ({teamData.members.length})
+            Semua ({teamData.totalMembers})
           </button>
           <button
             onClick={() => setFilterStatus('active')}
@@ -268,7 +274,7 @@ export default function Team() {
                 : 'bg-white text-gray-600 border border-gray-200'
             }`}
           >
-            Tidak Aktif ({teamData.pagination.total_rows - teamData.activeMembers})
+            Tidak Aktif ({teamData.inactiveMembers})
           </button>
         </div>
 

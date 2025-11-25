@@ -20,6 +20,7 @@ export default function UpdateProfile() {
   const [errorMsg, setErrorMsg] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
   const [applicationData, setApplicationData] = useState(null);
+  const [showProfileModal, setShowProfileModal] = useState(false);
   const primaryColor = '#fe7d17';
 
   useEffect(() => {
@@ -212,24 +213,39 @@ export default function UpdateProfile() {
         {/* Current Profile Preview */}
         <div className="bg-white rounded-xl border border-gray-200 p-6 mb-4">
           <h2 className="text-sm font-semibold text-gray-700 mb-4">Foto Profile Saat Ini</h2>
-          <div className="flex items-center justify-center mb-4">
-            <ProfileImage 
-              profile={previewUrl ? null : profile}
-              className="w-24 h-24"
-              iconClassName="w-12 h-12"
-              primaryColor={primaryColor}
-            />
-            {previewUrl && (
-              <div className="relative w-24 h-24 rounded-full overflow-hidden">
-                <Image
-                  src={previewUrl}
-                  alt="Preview"
-                  unoptimized
-                  fill
-                  className="object-cover"
-                />
-              </div>
-            )}
+          <div className="flex items-center justify-center">
+            <button
+              type="button"
+              onClick={() => setShowProfileModal(true)}
+              className="relative group"
+            >
+              {previewUrl ? (
+                <div className="relative w-24 h-24 rounded-full overflow-hidden ring-2 ring-orange-200 ring-offset-2">
+                  <Image
+                    src={previewUrl}
+                    alt="Preview"
+                    unoptimized
+                    fill
+                    className="object-cover"
+                  />
+                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                    <Icon icon="mdi:camera" className="w-6 h-6 text-white" />
+                  </div>
+                </div>
+              ) : (
+                <div className="relative">
+                  <ProfileImage 
+                    profile={profile}
+                    className="w-24 h-24"
+                    iconClassName="w-12 h-12"
+                    primaryColor={primaryColor}
+                  />
+                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity rounded-full flex items-center justify-center">
+                    <Icon icon={profile ? "mdi:camera" : "mdi:image-plus"} className="w-6 h-6 text-white" />
+                  </div>
+                </div>
+              )}
+            </button>
           </div>
         </div>
 
@@ -260,93 +276,10 @@ export default function UpdateProfile() {
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Masukkan nama Anda"
                 required
-                className="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500"
+                className="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500"
               />
             </div>
 
-            {/* Profile Image Upload */}
-            <div>
-              <label className="block text-sm font-semibold text-gray-900 mb-2">
-                Foto Profile
-              </label>
-              {previewUrl ? (
-                <div className="relative mb-3">
-                  <div className="w-full h-48 rounded-lg overflow-hidden border-2 border-gray-200">
-                    <Image
-                      src={previewUrl}
-                      alt="Preview"
-                      unoptimized
-                      width={400}
-                      height={200}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setSelectedFile(null);
-                      setPreviewUrl(null);
-                      if (fileInputRef.current) {
-                        fileInputRef.current.value = '';
-                      }
-                    }}
-                    disabled={isSubmitting}
-                    className="absolute top-2 right-2 w-8 h-8 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center shadow-lg disabled:opacity-50"
-                  >
-                    <Icon icon="mdi:close" className="w-5 h-5" />
-                  </button>
-                </div>
-              ) : (
-                <button
-                  type="button"
-                  onClick={handleFileSelect}
-                  disabled={isSubmitting}
-                  className="w-full h-48 border-2 border-dashed rounded-lg flex flex-col items-center justify-center gap-2 transition-all bg-orange-50 border-orange-300 hover:bg-orange-100 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  <div className="w-12 h-12 rounded-full flex items-center justify-center bg-orange-100">
-                    <Icon
-                      icon="mdi:image-plus"
-                      className="w-6 h-6 text-orange-600"
-                    />
-                  </div>
-                  <p className="text-sm font-semibold text-gray-900">
-                    Pilih Gambar
-                  </p>
-                  <p className="text-xs text-gray-500">JPG/PNG, maks 5MB</p>
-                </button>
-              )}
-
-              <input
-                type="file"
-                ref={fileInputRef}
-                onChange={handleFileChange}
-                accept="image/jpeg,image/png,image/jpg"
-                className="hidden"
-                disabled={isSubmitting}
-              />
-            </div>
-
-            {/* Delete Profile Button */}
-            {profile && !previewUrl && (
-              <button
-                type="button"
-                onClick={handleDeleteProfile}
-                disabled={isDeleting || isSubmitting}
-                className="w-full py-2.5 rounded-lg text-red-600 text-sm font-semibold border border-red-200 bg-red-50 hover:bg-red-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-              >
-                {isDeleting ? (
-                  <>
-                    <div className="w-4 h-4 border-2 border-red-600/50 border-t-red-600 rounded-full animate-spin" />
-                    Menghapus...
-                  </>
-                ) : (
-                  <>
-                    <Icon icon="mdi:delete" className="w-5 h-5" />
-                    Hapus Foto Profile
-                  </>
-                )}
-              </button>
-            )}
 
             {/* Submit Button */}
             <button
@@ -370,6 +303,93 @@ export default function UpdateProfile() {
           </form>
         </div>
       </div>
+
+      {/* Profile Modal */}
+      {showProfileModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
+          <div className="bg-white rounded-2xl w-full max-w-sm p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-bold text-gray-900">
+                {profile || previewUrl ? 'Ganti Foto Profile' : 'Tambahkan Foto Profile'}
+              </h3>
+              <button
+                onClick={() => setShowProfileModal(false)}
+                className="p-1 rounded-lg hover:bg-gray-100"
+              >
+                <Icon icon="mdi:close" className="w-5 h-5 text-gray-600" />
+              </button>
+            </div>
+
+            <div className="space-y-3">
+              <button
+                onClick={() => {
+                  handleFileSelect();
+                  setShowProfileModal(false);
+                }}
+                className="w-full py-3 px-4 rounded-lg bg-orange-50 border border-orange-200 hover:bg-orange-100 transition-colors flex items-center justify-center gap-2"
+              >
+                <Icon icon="mdi:image-plus" className="w-5 h-5" style={{ color: primaryColor }} />
+                <span className="font-semibold" style={{ color: primaryColor }}>
+                  {profile || previewUrl ? 'Ganti Foto' : 'Pilih Foto'}
+                </span>
+              </button>
+
+              {(profile || previewUrl) && (
+                <button
+                  onClick={() => {
+                    if (previewUrl) {
+                      setSelectedFile(null);
+                      setPreviewUrl(null);
+                      if (fileInputRef.current) {
+                        fileInputRef.current.value = '';
+                      }
+                      setShowProfileModal(false);
+                    } else {
+                      setShowProfileModal(false);
+                      handleDeleteProfile();
+                    }
+                  }}
+                  disabled={isDeleting}
+                  className="w-full py-3 px-4 rounded-lg bg-red-50 border border-red-200 hover:bg-red-100 transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
+                >
+                  {isDeleting ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-red-600/50 border-t-red-600 rounded-full animate-spin" />
+                      <span className="text-red-600 font-semibold">Menghapus...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Icon icon="mdi:delete" className="w-5 h-5 text-red-600" />
+                      <span className="text-red-600 font-semibold">Hapus Foto</span>
+                    </>
+                  )}
+                </button>
+              )}
+
+              <button
+                onClick={() => setShowProfileModal(false)}
+                className="w-full py-3 px-4 rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors text-gray-700 font-semibold"
+              >
+                Batal
+              </button>
+            </div>
+
+            <p className="text-xs text-gray-500 text-center mt-4">
+              Format: JPG/PNG, maksimal 5MB
+            </p>
+          </div>
+        </div>
+      )}
+
+      {/* Hidden File Input */}
+      <input
+        type="file"
+        ref={fileInputRef}
+        onChange={handleFileChange}
+        accept="image/jpeg,image/png,image/jpg"
+        className="hidden"
+        disabled={isSubmitting}
+      />
 
       {/* Bottom Navigation */}
       <div className="fixed bottom-0 left-0 right-0 border-t border-gray-100 bg-white">
