@@ -249,10 +249,13 @@ export const getTeamInvitedByLevel = async (level) => {
 };
 
 // Get team member data for a specific level
-export const getTeamDataByLevel = async (level, { limit = 10, page = 1, search = '' } = {}) => {
+export const getTeamDataByLevel = async (level, { limit = 10, page = 1, search = '', status } = {}) => {
   let query = `?limit=${encodeURIComponent(limit)}&page=${encodeURIComponent(page)}`;
   if (search && search.trim()) {
     query += `&search=${encodeURIComponent(search.trim())}`;
+  }
+  if (status && status.trim()) {
+    query += `&status=${encodeURIComponent(status.trim())}`;
   }
   return apiRequest(`/users/team-data/${level}${query}`, { method: 'GET' });
 };
@@ -446,4 +449,35 @@ export const spinV2 = async () => {
     console.error('Error spinning wheel:', error);
     return { success: false, message: error.message || 'Network error' };
   }
+};
+
+// Update user profile (name and/or profile image)
+export const updateUserProfile = async ({ name, profile }) => {
+  const token = await getToken();
+  const formData = new FormData();
+  if (name) {
+    formData.append('name', name);
+  }
+  if (profile) {
+    formData.append('profile', profile);
+  }
+  const res = await fetch(`${BASE_URL}/v3/users/profile`, {
+    method: 'PUT',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      // Do NOT set 'Content-Type' here, let browser set it for FormData
+    },
+    body: formData,
+  });
+  if (!res.ok) {
+    let msg = 'Gagal memperbarui profile';
+    try { msg = (await res.json()).message; } catch {}
+    return { success: false, message: msg };
+  }
+  return await res.json();
+};
+
+// Delete user profile image
+export const deleteUserProfile = async () => {
+  return apiRequest('/v3/users/profile', { method: 'DELETE' });
 };

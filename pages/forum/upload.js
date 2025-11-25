@@ -130,8 +130,17 @@ export default function UploadWithdrawal() {
             setUploadProgress(100);
             setIsSubmitting(false);
             if (res?.success) {
-                setSuccessMsg(res?.message || 'Postingan terkirim, menunggu persetujuan.');
+                // Reset form immediately after success
+                setSelectedFile(null);
+                setPreviewUrl(null);
+                setComment('');
                 setErrorMsg('');
+                // Reset file input
+                if (fileInputRef.current) {
+                    fileInputRef.current.value = '';
+                }
+                
+                setSuccessMsg(res?.message || 'Postingan terkirim, menunggu persetujuan.');
                 setTimeout(() => {
                     setSuccessMsg('');
                     router.push('/forum');

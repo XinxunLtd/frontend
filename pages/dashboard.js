@@ -9,6 +9,7 @@ import Toast from '../components/Toast';
 import { Icon } from '@iconify/react';
 import BottomNavbar from '../components/BottomNavbar';
 import Image from 'next/image';
+import ProfileImage from '../components/ProfileImage';
 
 export default function Dashboard() {
   const router = useRouter();
@@ -48,10 +49,11 @@ export default function Dashboard() {
           active: parsed.active || false,
           level: parsed.level || 0,
           total_invest: parsed.total_invest || 0,
-          total_invest_vip: parsed.total_invest_vip || 0
+          total_invest_vip: parsed.total_invest_vip || 0,
+          profile: parsed.profile || null
         });
       } catch (e) {
-        setUserData({ name: '', balance: 0, active: false, level: 0 });
+        setUserData({ name: '', balance: 0, active: false, level: 0, profile: null });
       }
     }
 
@@ -84,6 +86,28 @@ export default function Dashboard() {
       }, 1000);
       return () => clearTimeout(popupTimer);
     }
+
+    // Listen for profile updates
+    const handleProfileUpdate = () => {
+      const storedUser = localStorage.getItem('user');
+      if (storedUser) {
+        try {
+          const parsed = JSON.parse(storedUser);
+          setUserData(prev => ({
+            ...prev,
+            name: parsed.name || prev.name,
+            profile: parsed.profile || null
+          }));
+        } catch (e) {
+          // ignore
+        }
+      }
+    };
+
+    window.addEventListener('user-profile-updated', handleProfileUpdate);
+    return () => {
+      window.removeEventListener('user-profile-updated', handleProfileUpdate);
+    };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -238,9 +262,12 @@ export default function Dashboard() {
         <div className="bg-white rounded-xl p-4 mb-4 border border-gray-200">
           <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-full flex items-center justify-center" style={{ backgroundColor: `${primaryColor}15` }}>
-                <Icon icon="mdi:account" className="w-6 h-6" style={{ color: primaryColor }} />
-              </div>
+              <ProfileImage 
+                profile={userData?.profile}
+                className="w-12 h-12"
+                iconClassName="w-6 h-6"
+                primaryColor={primaryColor}
+              />
               <div>
                 <h2 className="font-semibold text-gray-900">{userData?.name || 'Investor'}</h2>
               </div>

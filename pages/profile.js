@@ -9,6 +9,7 @@ import AndroidAppLinksTester from '../components/AndroidAppLinksTester';
 import { logoutUser } from '../utils/api';
 import { isMobileApp } from '../utils/mobileAppDetection';
 import Image from 'next/image';
+import ProfileImage from '../components/ProfileImage';
 
 export default function Profile() {
   const router = useRouter();
@@ -38,7 +39,8 @@ export default function Profile() {
         total_deposit: 0,
         total_withdraw: 0,
         level: 0,
-        active: false
+        active: false,
+        profile: null
       });
     } else {
       setUserData(user);
@@ -140,9 +142,12 @@ export default function Profile() {
           <div className="flex items-center gap-4">
             {/* Avatar Circle */}
             <div className="relative">
-              <div className="w-20 h-20 rounded-full bg-gradient-to-br from-[#fe7d17] to-[#ff9a52] flex items-center justify-center">
-                <Icon icon="mdi:account" className="w-10 h-10 text-white" />
-              </div>
+              <ProfileImage 
+                profile={userData?.profile}
+                className="w-20 h-20"
+                iconClassName="w-10 h-10"
+                primaryColor={primaryColor}
+              />
               {isVerified && (
                 <div className="absolute -bottom-1 -right-1 w-7 h-7 bg-green-500 rounded-full border-4 border-white flex items-center justify-center">
                   <Icon icon="mdi:check" className="w-4 h-4 text-white" />
@@ -152,9 +157,18 @@ export default function Profile() {
 
             {/* User Info */}
             <div className="flex-1 min-w-0">
-              <h1 className="text-xl font-bold text-gray-900 mb-1 truncate">
-                {userData?.name || 'Tester'}
-              </h1>
+              <div className="flex items-center gap-2 mb-1">
+                <h1 className="text-xl font-bold text-gray-900 truncate">
+                  {userData?.name || 'Tester'}
+                </h1>
+                <button
+                  onClick={() => router.push('/profile/update')}
+                  className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors flex-shrink-0"
+                  title="Update Profile"
+                >
+                  <Icon icon="mdi:pencil" className="w-4 h-4 text-gray-600" />
+                </button>
+              </div>
               <div className="flex items-center gap-2 mb-1">
                 <Icon icon="mdi:phone" className="w-4 h-4 text-gray-400" />
                 <p className="text-sm text-gray-600">+62{userData?.number || '882646678601'}</p>

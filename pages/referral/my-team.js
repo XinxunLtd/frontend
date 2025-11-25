@@ -4,6 +4,7 @@ import { useRouter } from 'next/router';
 import { Icon } from '@iconify/react';
 import { getTeamInvitedByLevel, getTeamDataByLevel } from '../../utils/api';
 import BottomNavbar from '../../components/BottomNavbar';
+import ProfileImage from '../../components/ProfileImage';
 
 export default function Team() {
   const router = useRouter();
@@ -34,11 +35,18 @@ export default function Team() {
       const statsRes = await getTeamInvitedByLevel(level);
       const stats = statsRes?.data?.[level] || { active: 0, count: 0, total_invest: 0 };
 
-      const membersRes = await getTeamDataByLevel(level, { 
+      const queryParams = {
         limit, 
         page, 
-        search: debouncedSearchTerm 
-      });
+        search: debouncedSearchTerm
+      };
+      
+      // Only add status query if not 'all'
+      if (filterStatus !== 'all') {
+        queryParams.status = filterStatus;
+      }
+      
+      const membersRes = await getTeamDataByLevel(level, queryParams);
       
       // Handle new response structure
       const responseData = membersRes?.data || {};
@@ -147,7 +155,7 @@ export default function Team() {
 
     fetchData(cancelToken);
     return () => { cancelToken.current = true; };
-  }, [level, page, debouncedSearchTerm]);
+  }, [level, page, debouncedSearchTerm, filterStatus]);
 
   const handlePageChange = (newPage) => {
     if (newPage >= 1 && newPage !== page) {
@@ -163,11 +171,8 @@ export default function Team() {
     }).format(amount);
   };
 
-  // Filter members by status only (search is handled by API)
-  const filteredMembers = teamData.members.filter(member => {
-    const matchesStatus = filterStatus === 'all' || member.status === filterStatus;
-    return matchesStatus;
-  });
+  // No need to filter client-side, API handles it now
+  const filteredMembers = teamData.members;
 
   const primaryColor = '#fe7d17';
 
@@ -281,10 +286,13 @@ export default function Team() {
                 className="bg-white rounded-xl p-4 border border-gray-200 hover:border-gray-300 transition-all"
               >
                 <div className="flex items-center gap-3">
-                  {/* Number Badge */}
-                  <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 text-xs font-bold" style={{ backgroundColor: `${primaryColor}20`, color: primaryColor }}>
-                    {idx + 1 + (page - 1) * limit}
-                  </div>
+                  {/* Profile Image */}
+                  <ProfileImage 
+                    profile={member.profile}
+                    className="w-10 h-10"
+                    iconClassName="w-5 h-5"
+                    primaryColor={primaryColor}
+                  />
 
                   {/* Info */}
                   <div className="flex-1 min-w-0">
