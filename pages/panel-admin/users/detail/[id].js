@@ -16,7 +16,7 @@ export default function UserDetail() {
   const [password, setPassword] = useState('');
   const [balanceAmount, setBalanceAmount] = useState('');
   const [balanceType, setBalanceType] = useState('add');
-  const [editData, setEditData] = useState({ name: '', number: '', status: '', investment_status: '' });
+  const [editData, setEditData] = useState({ name: '', number: '', status: '', investment_status: '', status_publisher: '' });
   const [editMode, setEditMode] = useState(false);
   const [error, setError] = useState('');
   const [saving, setSaving] = useState(false);
@@ -36,7 +36,8 @@ export default function UserDetail() {
           name: res.data.name,
           number: res.data.number,
           status: res.data.status,
-          investment_status: res.data.investment_status
+          investment_status: res.data.investment_status,
+          status_publisher: res.data.status_publisher
         });
       }
     } catch (error) {
@@ -197,6 +198,17 @@ export default function UserDetail() {
                 }`}>
                   Investasi: {user.investment_status === 'Active' ? 'Aktif' : 'Tidak Aktif'}
                 </span>
+                <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+                  user.status_publisher === 'Active' 
+                    ? 'bg-green-500/20 text-green-400 border border-green-500/30'
+                    : user.status_publisher === 'Inactive'
+                    ? 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30'
+                    : user.status_publisher === 'Suspend'
+                    ? 'bg-red-500/20 text-red-400 border border-red-500/30'
+                    : 'bg-gray-500/20 text-gray-400 border border-gray-500/30'
+                }`}>
+                  Publisher: {user.status_publisher === 'Active' ? 'Aktif' : user.status_publisher === 'Inactive' ? 'Tidak Aktif' : 'Tersuspend'}
+                </span>
               </div>
             </div>
           </div>
@@ -327,6 +339,35 @@ export default function UserDetail() {
                     </div>
                   )}
                 </div>
+
+                <div>
+                  <label className="block text-gray-400 text-sm mb-2">Status Publisher</label>
+                  {editMode ? (
+                    <select 
+                      value={editData.status_publisher} 
+                      onChange={e => setEditData(d => ({ ...d, status_publisher: e.target.value }))}
+                      className="w-full bg-white/10 border border-white/20 text-white rounded-2xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                    >
+                      <option value="Active">Aktif</option>
+                      <option value="Inactive">Tidak Aktif</option>
+                      <option value="Suspend">Tersuspend</option>
+                    </select>
+                  ) : (
+                    <div className="bg-white/5 rounded-2xl px-4 py-3">
+                      <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+                        user.status_publisher === 'Active' 
+                          ? 'bg-green-500/20 text-green-400 border border-green-500/30'
+                          : user.status_publisher === 'Inactive'
+                          ? 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30'
+                          : user.status_publisher === 'Suspend'
+                          ? 'bg-red-500/20 text-red-400 border border-red-500/30'
+                          : 'bg-gray-500/20 text-gray-400 border border-gray-500/30'
+                      }`}>
+                        {user.status_publisher === 'Active' ? 'Aktif' : user.status_publisher === 'Inactive' ? 'Tidak Aktif' : 'Tersuspend'}
+                      </span>
+                    </div>
+                  )}
+                </div>
               </div>
 
               {/* Action Buttons */}
@@ -352,7 +393,8 @@ export default function UserDetail() {
                         name: user.name,
                         number: user.number,
                         status: user.status,
-                        investment_status: user.investment_status
+                        investment_status: user.investment_status,
+                        status_publisher: user.status_publisher
                       });
                     }}
                     className="bg-white/10 hover:bg-white/20 text-white px-6 py-3 rounded-2xl flex items-center gap-2 transition-all"
