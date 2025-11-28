@@ -116,11 +116,16 @@ export default function Login() {
 
             if (result && result.success === true) {
                 setFormData({ number: '', password: '' });
+                
+                // Dispatch event after redirect to prevent conflicts
                 if (typeof window !== 'undefined') {
-                    window.dispatchEvent(new Event('user-token-changed'));
+                    setTimeout(() => {
+                        window.dispatchEvent(new Event('user-token-changed'));
+                    }, 100);
                 }
 
-                router.push('/dashboard');
+                // Use replace to avoid adding to history stack and prevent back button issues
+                router.replace('/dashboard');
 
             } else if (result && result.success === false) {
                 // Handle rate limiting (429)
@@ -149,23 +154,47 @@ export default function Login() {
     useEffect(() => {
         if (typeof window === 'undefined') return;
         
+        // Set flag to prevent UserContext from redirecting while on login page
+        sessionStorage.setItem('is_on_login_page', 'true');
+        
         // Check if user just logged out - if so, don't auto-redirect
         const justLoggedOut = sessionStorage.getItem('just_logged_out');
         if (justLoggedOut) {
             sessionStorage.removeItem('just_logged_out');
-            return; // Don't redirect if just logged out
+            // Cleanup flag when component unmounts
+            return () => {
+                sessionStorage.removeItem('is_on_login_page');
+            };
         }
         
+        // Only check token once on mount, not on every router change
         const token = sessionStorage.getItem('token');
         const accessExpire = sessionStorage.getItem('access_expire');
         if (token && accessExpire) {
-            const now = new Date();
-            const expiry = new Date(accessExpire);
-            if (now < expiry) {
-                router.replace('/dashboard');
+            try {
+                const now = new Date();
+                const expiry = new Date(accessExpire);
+                if (expiry && expiry.getTime() > now.getTime()) {
+                    // Only redirect if we're actually on login page (prevent redirect loops)
+                    if (window.location.pathname === '/login') {
+                        // Clear the flag before redirecting
+                        sessionStorage.removeItem('is_on_login_page');
+                        router.replace('/dashboard');
+                        return;
+                    }
+                }
+            } catch (e) {
+                // Invalid date, ignore
             }
         }
-    }, [router]);
+        
+        // Cleanup flag when component unmounts
+        return () => {
+            sessionStorage.removeItem('is_on_login_page');
+        };
+        // Only run once on mount
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const [ogImageUrl, setOgImageUrl] = useState('/main_logo.png');
     const [pageUrl, setPageUrl] = useState('');

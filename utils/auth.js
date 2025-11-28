@@ -19,10 +19,19 @@ const deleteCookie = (name) => {
 
 export const redirectToLogin = () => {
   if (typeof window !== 'undefined') {
+    // Check if already on login page to prevent unnecessary refresh
+    const isOnLoginPage = window.location.pathname === '/login' || 
+                          window.location.pathname === '/register' ||
+                          sessionStorage.getItem('is_on_login_page') === 'true';
+    
     sessionStorage.removeItem('token');
     sessionStorage.removeItem('access_expire');
     deleteCookie('refresh_token');
-    window.location.href = '/login';
+    
+    // Only redirect if not already on login page
+    if (!isOnLoginPage) {
+      window.location.href = '/login';
+    }
   }
 };
 

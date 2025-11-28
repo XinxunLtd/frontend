@@ -304,6 +304,18 @@ export function UserProvider({ children }) {
         // Listen for storage changes (other tabs or manual edits)
         const handleStorage = (e) => {
             if (!e.key) return;
+            
+            // Don't do anything if already on login page
+            const isAuthPage = typeof window !== 'undefined' && 
+                (window.location.pathname === '/login' || 
+                 window.location.pathname === '/register' || 
+                 window.location.pathname === '/' ||
+                 sessionStorage.getItem('is_on_login_page') === 'true');
+            
+            if (isAuthPage) {
+                return; // Don't trigger redirect or fetch if on auth page
+            }
+            
             if (e.key === 'token' || e.key === 'access_expire' || e.key === 'refresh_token') {
                 const tokenNow = typeof window !== 'undefined' ? sessionStorage.getItem('token') : null;
                 const accessExpireNow = typeof window !== 'undefined' ? sessionStorage.getItem('access_expire') : null;
@@ -320,7 +332,10 @@ export function UserProvider({ children }) {
                     localStorage.removeItem("application");
                     setUser(null);
                     setApplication(null);
-                    redirectToLogin();
+                    // Only redirect if not already on login page
+                    if (!isAuthPage) {
+                        redirectToLogin();
+                    }
                 } else {
                     // token set/updated -> trigger immediate fetch and ensure interval running
                     fetchUserInfo();
@@ -331,6 +346,17 @@ export function UserProvider({ children }) {
 
         // Custom event listener for same-tab token updates (storage event doesn't fire in same tab)
         const handleTokenChanged = () => {
+            // Don't do anything if already on login page
+            const isAuthPage = typeof window !== 'undefined' && 
+                (window.location.pathname === '/login' || 
+                 window.location.pathname === '/register' || 
+                 window.location.pathname === '/' ||
+                 sessionStorage.getItem('is_on_login_page') === 'true');
+            
+            if (isAuthPage) {
+                return; // Don't trigger redirect or fetch if on auth page
+            }
+            
             const tokenNow = typeof window !== 'undefined' ? sessionStorage.getItem('token') : null;
             const accessExpireNow = typeof window !== 'undefined' ? sessionStorage.getItem('access_expire') : null;
             let expiryNow;
@@ -345,7 +371,10 @@ export function UserProvider({ children }) {
                 localStorage.removeItem("application");
                 setUser(null);
                 setApplication(null);
-                redirectToLogin();
+                // Only redirect if not already on login page
+                if (!isAuthPage) {
+                    redirectToLogin();
+                }
             } else {
                 fetchUserInfo();
                 startInterval();
