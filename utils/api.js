@@ -1,5 +1,6 @@
 // utils/api.js
 import { handleApiResponse } from './apiHandler';
+import { isMobileApp } from './mobileAppDetection';
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -33,10 +34,12 @@ export const refreshTokens = async () => {
     throw new Error('No refresh token available');
   }
 
+  const is_app = typeof window !== 'undefined' ? isMobileApp() : false;
+
   const res = await fetch(`${BASE_URL}/refresh`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ refresh_token })
+    body: JSON.stringify({ refresh_token, is_app })
   });
   const data = await res.json().catch(() => ({}));
   if (!res.ok || !data.success) {
@@ -337,10 +340,12 @@ export const createInvestment = async (payload) => {
 
 export const registerUser = async (userData) => {
   try {
+    const is_app = typeof window !== 'undefined' ? isMobileApp() : false;
+    
     const response = await fetch(`${BASE_URL}/register`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(userData)
+      body: JSON.stringify({ ...userData, is_app })
     });
     
     const data = await response.json().catch(() => ({}));
@@ -375,10 +380,12 @@ export const registerUser = async (userData) => {
 
 export const loginUser = async (credentials) => {
   try {
+    const is_app = typeof window !== 'undefined' ? isMobileApp() : false;
+    
     const response = await fetch(`${BASE_URL}/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(credentials)
+      body: JSON.stringify({ ...credentials, is_app })
     });
     
     const data = await response.json().catch(() => ({}));

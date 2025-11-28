@@ -82,19 +82,47 @@ export default function Profile() {
   }, []);
 
 
-  const handleLogout = () => {
-    try {
-      logoutUser().catch(() => {});
-    } catch (e) {}
-
+  const handleLogout = async () => {
+    // Clear all storage first, before redirect
     sessionStorage.removeItem('token');
     sessionStorage.removeItem('access_expire');
     localStorage.removeItem('user');
     localStorage.removeItem('application');
+    
+    // Clear cookies more thoroughly
     if (typeof document !== 'undefined') {
+      // Clear refresh_token cookie
       document.cookie = 'refresh_token=; Max-Age=0; path=/;';
+      document.cookie = 'refresh_token=; Max-Age=0; path=/; domain=' + window.location.hostname;
+      
+      // Clear all cookies that might be related to auth
+      const cookies = document.cookie.split(';');
+      cookies.forEach(cookie => {
+        const eqPos = cookie.indexOf('=');
+        const name = eqPos > -1 ? cookie.substr(0, eqPos).trim() : cookie.trim();
+        if (name.includes('token') || name.includes('auth') || name.includes('refresh')) {
+          document.cookie = `${name}=; Max-Age=0; path=/;`;
+          document.cookie = `${name}=; Max-Age=0; path=/; domain=${window.location.hostname}`;
+        }
+      });
     }
-    router.push('/login');
+    
+    // Set a flag to indicate logout just happened (to prevent form reset on login page)
+    sessionStorage.setItem('just_logged_out', 'true');
+    
+    // Try to logout on server (but don't wait for it)
+    try {
+      logoutUser().catch(() => {});
+    } catch (e) {}
+    
+    // Use replace instead of push to prevent back button issues
+    // This also ensures a clean navigation without adding to history
+    router.replace('/login').then(() => {
+      // Clear the logout flag after a short delay
+      setTimeout(() => {
+        sessionStorage.removeItem('just_logged_out');
+      }, 100);
+    });
   };
 
   const formatCurrency = (amount) => {

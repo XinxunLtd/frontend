@@ -21,6 +21,7 @@ export default function UpdateProfile() {
   const [successMsg, setSuccessMsg] = useState('');
   const [applicationData, setApplicationData] = useState(null);
   const [showProfileModal, setShowProfileModal] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const primaryColor = '#fe7d17';
 
   useEffect(() => {
@@ -141,11 +142,6 @@ export default function UpdateProfile() {
 
   const handleDeleteProfile = async () => {
     if (!profile) return;
-    
-    if (!confirm('Apakah Anda yakin ingin menghapus foto profile?')) {
-      return;
-    }
-
     setIsDeleting(true);
     setErrorMsg('');
     setSuccessMsg('');
@@ -346,7 +342,7 @@ export default function UpdateProfile() {
                       setShowProfileModal(false);
                     } else {
                       setShowProfileModal(false);
-                      handleDeleteProfile();
+                      setShowDeleteConfirm(true);
                     }
                   }}
                   disabled={isDeleting}
@@ -377,6 +373,58 @@ export default function UpdateProfile() {
             <p className="text-xs text-gray-500 text-center mt-4">
               Format: JPG/PNG, maksimal 5MB
             </p>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteConfirm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
+          <div className="bg-white rounded-2xl w-full max-w-sm p-6">
+            <div className="flex items-center justify-center mb-4">
+              <div className="w-16 h-16 rounded-full bg-red-100 flex items-center justify-center">
+                <Icon icon="mdi:alert-circle" className="w-8 h-8 text-red-600" />
+              </div>
+            </div>
+            
+            <h3 className="text-lg font-bold text-gray-900 text-center mb-2">
+              Hapus Foto Profile?
+            </h3>
+            
+            <p className="text-sm text-gray-600 text-center mb-6">
+              Apakah Anda yakin ingin menghapus foto profile? Tindakan ini tidak dapat dibatalkan.
+            </p>
+
+            <div className="flex gap-3">
+              <button
+                onClick={() => setShowDeleteConfirm(false)}
+                disabled={isDeleting}
+                className="flex-1 py-3 px-4 rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors text-gray-700 font-semibold disabled:opacity-50"
+              >
+                Batal
+              </button>
+              
+              <button
+                onClick={async () => {
+                  setShowDeleteConfirm(false);
+                  await handleDeleteProfile();
+                }}
+                disabled={isDeleting}
+                className="flex-1 py-3 px-4 rounded-lg bg-red-500 hover:bg-red-600 transition-colors text-white font-semibold disabled:opacity-50 flex items-center justify-center gap-2"
+              >
+                {isDeleting ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-white/50 border-t-white rounded-full animate-spin" />
+                    <span>Menghapus...</span>
+                  </>
+                ) : (
+                  <>
+                    <Icon icon="mdi:delete" className="w-5 h-5" />
+                    <span>Hapus</span>
+                  </>
+                )}
+              </button>
+            </div>
           </div>
         </div>
       )}

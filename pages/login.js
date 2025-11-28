@@ -148,6 +148,14 @@ export default function Login() {
 
     useEffect(() => {
         if (typeof window === 'undefined') return;
+        
+        // Check if user just logged out - if so, don't auto-redirect
+        const justLoggedOut = sessionStorage.getItem('just_logged_out');
+        if (justLoggedOut) {
+            sessionStorage.removeItem('just_logged_out');
+            return; // Don't redirect if just logged out
+        }
+        
         const token = sessionStorage.getItem('token');
         const accessExpire = sessionStorage.getItem('access_expire');
         if (token && accessExpire) {
