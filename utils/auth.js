@@ -1,3 +1,5 @@
+import { clearTokenFromAndroid } from './androidInterface';
+
 export const checkAuth = () => {
   if (typeof window === 'undefined') return false;
 
@@ -27,6 +29,8 @@ export const redirectToLogin = () => {
     sessionStorage.removeItem('token');
     sessionStorage.removeItem('access_expire');
     deleteCookie('refresh_token');
+    // Clear token from Android WebView
+    clearTokenFromAndroid();
     
     // Only redirect if not already on login page
     if (!isOnLoginPage) {

@@ -1,6 +1,7 @@
 // utils/api.js
 import { handleApiResponse } from './apiHandler';
 import { isMobileApp } from './mobileAppDetection';
+import { storeTokenToAndroid, clearTokenFromAndroid } from './androidInterface';
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -49,12 +50,18 @@ export const refreshTokens = async () => {
     deleteCookie('refresh_token');
     localStorage.removeItem('user');
     localStorage.removeItem('application');
+    // Clear token from Android WebView
+    clearTokenFromAndroid();
     throw new Error(data.message || 'Token refresh failed');
   }
 
   // store new tokens safely
   sessionStorage.setItem('token', data.data.access_token);
   sessionStorage.setItem('access_expire', data.data.access_expire);
+  // Store token to Android WebView
+  if (data.data.access_token) {
+    storeTokenToAndroid(data.data.access_token);
+  }
   // update refresh token cookie
   if (data.data.refresh_token) {
     setCookie('refresh_token', data.data.refresh_token, 30);
@@ -83,6 +90,8 @@ async function ensureTokenValid() {
         isRefreshing = false;
         refreshQueue.forEach(cb => cb(err));
         refreshQueue = [];
+        // Clear token from Android WebView on refresh failure
+        clearTokenFromAndroid();
         throw err;
       }
     } else {
@@ -101,6 +110,8 @@ async function ensureTokenValid() {
         // no way to refresh
         sessionStorage.removeItem('token');
         sessionStorage.removeItem('access_expire');
+        // Clear token from Android WebView
+        clearTokenFromAndroid();
         throw new Error('Token expired and no refresh token');
       }
 
@@ -115,6 +126,8 @@ async function ensureTokenValid() {
           isRefreshing = false;
           refreshQueue.forEach(cb => cb(err));
           refreshQueue = [];
+          // Clear token from Android WebView on refresh failure
+          clearTokenFromAndroid();
           throw err;
         }
       } else {
@@ -354,6 +367,10 @@ export const registerUser = async (userData) => {
       // Store tokens and user info
       sessionStorage.setItem('token', data.data.access_token);
       sessionStorage.setItem('access_expire', data.data.access_expire);
+      // Store token to Android WebView
+      if (data.data.access_token) {
+        storeTokenToAndroid(data.data.access_token);
+      }
       // store refresh token in cookie
       setCookie('refresh_token', data.data.refresh_token, 30);
       localStorage.setItem('application', JSON.stringify(data.data.application));
@@ -394,6 +411,10 @@ export const loginUser = async (credentials) => {
       // Store tokens and user info
       sessionStorage.setItem('token', data.data.access_token);
       sessionStorage.setItem('access_expire', data.data.access_expire);
+      // Store token to Android WebView
+      if (data.data.access_token) {
+        storeTokenToAndroid(data.data.access_token);
+      }
       setCookie('refresh_token', data.data.refresh_token, 30);
       localStorage.setItem('application', JSON.stringify(data.data.application));
       localStorage.setItem('user', JSON.stringify(data.data.user));
@@ -421,13 +442,24 @@ export const loginUser = async (credentials) => {
 export const logoutUser = async () => {
   const refresh_token = getCookie('refresh_token');
   if (!refresh_token) {
+    // Clear token from Android WebView even if no refresh token
+    clearTokenFromAndroid();
     return { success: false, message: 'No refresh token' };
   }
 
-  return apiRequest('/logout', {
-    method: 'POST',
-    body: JSON.stringify({ refresh_token }),
-  });
+  try {
+    const result = await apiRequest('/logout', {
+      method: 'POST',
+      body: JSON.stringify({ refresh_token }),
+    });
+    // Clear token from Android WebView after successful logout
+    clearTokenFromAndroid();
+    return result;
+  } catch (error) {
+    // Clear token from Android WebView even if logout fails
+    clearTokenFromAndroid();
+    throw error;
+  }
 };
 
 // BANK ACCOUNT MANAGEMENT

@@ -7,6 +7,7 @@ import AppInstallButton from '../components/AppInstallButton';
 import MobileAppStatus from '../components/MobileAppStatus';
 import AndroidAppLinksTester from '../components/AndroidAppLinksTester';
 import { logoutUser } from '../utils/api';
+import { clearTokenFromAndroid } from '../utils/androidInterface';
 import { isMobileApp } from '../utils/mobileAppDetection';
 import Image from 'next/image';
 import ProfileImage from '../components/ProfileImage';
@@ -88,6 +89,9 @@ export default function Profile() {
     sessionStorage.removeItem('access_expire');
     localStorage.removeItem('user');
     localStorage.removeItem('application');
+    
+    // Clear token from Android WebView
+    clearTokenFromAndroid();
     
     // Clear cookies more thoroughly
     if (typeof document !== 'undefined') {
