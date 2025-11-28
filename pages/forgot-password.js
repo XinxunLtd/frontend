@@ -1,5 +1,5 @@
 import Head from 'next/head';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { Icon } from '@iconify/react';
@@ -20,6 +20,11 @@ export default function ForgotPassword() {
     password: '', 
     confirmPassword: '' 
   });
+  const [otpDigits, setOtpDigits] = useState(['', '', '', '']);
+  const otpInputRef0 = useRef(null);
+  const otpInputRef1 = useRef(null);
+  const otpInputRef2 = useRef(null);
+  const otpInputRef3 = useRef(null);
   const [notification, setNotification] = useState({ message: '', type: '' });
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -89,15 +94,59 @@ export default function ForgotPassword() {
 
   const handleChange = (e) => {
     const { id, value } = e.target;
-    let processedValue = value;
-    
-    // Only allow numbers for OTP
-    if (id === 'otp') {
-      processedValue = value.replace(/[^0-9]/g, '').slice(0, 6);
-    }
-    
-    setFormData((prev) => ({ ...prev, [id]: processedValue }));
+    setFormData((prev) => ({ ...prev, [id]: value }));
     setNotification({ message: '', type: '' });
+  };
+
+  // Handle OTP digit change
+  const handleOtpChange = (index, value) => {
+    // Only allow numbers
+    const digit = value.replace(/[^0-9]/g, '').slice(0, 1);
+    
+    const newDigits = [...otpDigits];
+    newDigits[index] = digit;
+    setOtpDigits(newDigits);
+    
+    // Update formData.otp
+    const otpValue = newDigits.join('');
+    setFormData((prev) => ({ ...prev, otp: otpValue }));
+    setNotification({ message: '', type: '' });
+    
+    // Auto focus to next input
+    if (digit && index < 3) {
+      const refs = [otpInputRef0, otpInputRef1, otpInputRef2, otpInputRef3];
+      refs[index + 1]?.current?.focus();
+    }
+  };
+
+  // Handle OTP paste
+  const handleOtpPaste = (e) => {
+    e.preventDefault();
+    const pastedData = e.clipboardData.getData('text').replace(/[^0-9]/g, '').slice(0, 4);
+    
+    if (pastedData.length > 0) {
+      const newDigits = [...otpDigits];
+      for (let i = 0; i < 4; i++) {
+        newDigits[i] = pastedData[i] || '';
+      }
+      setOtpDigits(newDigits);
+      
+      const otpValue = newDigits.join('');
+      setFormData((prev) => ({ ...prev, otp: otpValue }));
+      
+      // Focus on last filled input or first empty
+      const refs = [otpInputRef0, otpInputRef1, otpInputRef2, otpInputRef3];
+      const focusIndex = Math.min(pastedData.length, 3);
+      refs[focusIndex]?.current?.focus();
+    }
+  };
+
+  // Handle OTP backspace
+  const handleOtpKeyDown = (index, e) => {
+    if (e.key === 'Backspace' && !otpDigits[index] && index > 0) {
+      const refs = [otpInputRef0, otpInputRef1, otpInputRef2, otpInputRef3];
+      refs[index - 1]?.current?.focus();
+    }
   };
 
   const formatTime = (seconds) => {
@@ -122,7 +171,7 @@ export default function ForgotPassword() {
       if (result?.success) {
         setRequestId(result.data?.request_id || null);
         setNotification({ 
-          message: result.message || 'OTP berhasil dikirim', 
+          message: result.message || 'Kode Verifikasi berhasil dikirim', 
           type: 'success' 
         });
         
@@ -134,10 +183,18 @@ export default function ForgotPassword() {
         // Set resend countdown (default 60 seconds for first request)
         setResendCountdown(60);
         
+        // Reset OTP digits
+        setOtpDigits(['', '', '', '']);
+        setFormData(prev => ({ ...prev, otp: '' }));
+        
         setStep(2);
+        // Auto focus first OTP input
+        setTimeout(() => {
+          otpInputRef0.current?.focus();
+        }, 100);
       } else {
         setNotification({ 
-          message: result?.message || 'Gagal mengirim OTP', 
+          message: result?.message || 'Gagal mengirim kode verifikasi', 
           type: 'error' 
         });
         
@@ -168,9 +225,18 @@ export default function ForgotPassword() {
       if (result?.success) {
         setRequestId(result.data?.request_id || null);
         setNotification({ 
-          message: result.message || 'OTP berhasil dikirim ulang', 
+          message: result.message || 'Kode Verifikasi berhasil dikirim ulang', 
           type: 'success' 
         });
+        
+        // Reset OTP digits
+        setOtpDigits(['', '', '', '']);
+        setFormData(prev => ({ ...prev, otp: '' }));
+        
+        // Auto focus first OTP input
+        setTimeout(() => {
+          otpInputRef0.current?.focus();
+        }, 100);
         
         // Set countdown timer
         if (result.data?.retry_after_seconds) {
@@ -179,7 +245,7 @@ export default function ForgotPassword() {
         }
       } else {
         setNotification({ 
-          message: result?.message || 'Gagal mengirim ulang OTP', 
+          message: result?.message || 'Gagal mengirim ulang kode verifikasi', 
           type: 'error' 
         });
         
@@ -201,8 +267,8 @@ export default function ForgotPassword() {
 
   const handleVerifyOTP = async (e) => {
     e.preventDefault();
-    if (!formData.otp || formData.otp.length !== 6) {
-      setNotification({ message: 'Kode OTP harus 6 digit', type: 'error' });
+    if (!formData.otp || formData.otp.length !== 4) {
+      setNotification({ message: 'Kode Verifikasi harus 4 digit', type: 'error' });
       return;
     }
 
@@ -215,13 +281,15 @@ export default function ForgotPassword() {
       if (result?.success) {
         setResetToken(result.data?.token || null);
         setNotification({ 
-          message: result.message || 'Kode OTP benar', 
+          message: result.message || 'Kode Verifikasi benar', 
           type: 'success' 
         });
+        // Reset OTP digits
+        setOtpDigits(['', '', '', '']);
         setStep(3);
       } else {
         setNotification({ 
-          message: result?.message || 'Kode OTP tidak valid', 
+          message: result?.message || 'Kode Verifikasi tidak valid', 
           type: 'error' 
         });
       }
@@ -307,7 +375,7 @@ export default function ForgotPassword() {
             </div>
             <p className="mt-1 text-sm text-neutral-500">
               {step === 1 && 'Masukkan nomor HP untuk mengatur ulang password'}
-              {step === 2 && 'Masukkan kode OTP yang dikirim ke nomor Anda'}
+              {step === 2 && 'Masukkan kode verifikasi yang dikirim ke nomor Anda'}
               {step === 3 && 'Buat password baru untuk akun Anda'}
             </p>
           </div>
@@ -409,7 +477,7 @@ export default function ForgotPassword() {
                       <span>Tunggu {formatTime(countdown)}</span>
                     </>
                   ) : (
-                    <span>Kirim OTP</span>
+                      <span>Kirim Kode Verifikasi</span>
                   )}
                 </button>
               </form>
@@ -419,29 +487,34 @@ export default function ForgotPassword() {
             {step === 2 && (
               <form onSubmit={handleVerifyOTP} className="space-y-4">
                 <div>
-                  <label
-                    htmlFor="otp"
-                    className="mb-1.5 block text-sm font-medium text-neutral-800"
-                  >
-                    Kode OTP
+                  <label className="mb-1.5 block text-sm font-medium text-neutral-800">
+                    Kode Verifikasi
                   </label>
-                  <div className="flex items-center rounded-xl border border-neutral-200 bg-white px-3 py-2 focus-within:ring-2 focus-within:ring-[#fe7d17]">
-                    <input
-                      type="text"
-                      inputMode="numeric"
-                      pattern="[0-9]*"
-                      id="otp"
-                      className="h-9 flex-1 border-none bg-transparent text-sm text-neutral-900 outline-none placeholder:text-neutral-400 text-center tracking-widest"
-                      placeholder="000000"
-                      value={formData.otp}
-                      onChange={handleChange}
-                      maxLength={6}
-                      required
-                      autoComplete="one-time-code"
-                    />
+                  <div className="flex items-center justify-center gap-3">
+                    {[0, 1, 2, 3].map((index) => (
+                      <input
+                        key={index}
+                        ref={index === 0 ? otpInputRef0 : index === 1 ? otpInputRef1 : index === 2 ? otpInputRef2 : otpInputRef3}
+                        type="text"
+                        inputMode="numeric"
+                        pattern="[0-9]*"
+                        className={`w-14 h-14 text-center text-2xl font-semibold rounded-xl border-2 bg-white text-neutral-900 outline-none transition-all ${
+                          otpDigits[index] 
+                            ? 'border-[#fe7d17] ring-2 ring-[#fe7d17]' 
+                            : 'border-neutral-200 focus:border-[#fe7d17] focus:ring-2 focus:ring-[#fe7d17]'
+                        }`}
+                        value={otpDigits[index]}
+                        onChange={(e) => handleOtpChange(index, e.target.value)}
+                        onPaste={handleOtpPaste}
+                        onKeyDown={(e) => handleOtpKeyDown(index, e)}
+                        maxLength={1}
+                        required
+                        autoComplete="off"
+                      />
+                    ))}
                   </div>
-                  <p className="mt-1 text-xs text-neutral-500">
-                    Kode OTP telah dikirim ke +62{formData.number}
+                  <p className="mt-3 text-xs text-center text-neutral-500">
+                    Kode Verifikasi telah dikirim ke +62{formData.number}
                   </p>
                 </div>
 
@@ -467,15 +540,15 @@ export default function ForgotPassword() {
 
                   <button
                     type="submit"
-                    disabled={isLoading || !formData.otp || formData.otp.length !== 6}
+                    disabled={isLoading || !formData.otp || formData.otp.length !== 4}
                     className="flex-1 h-11 items-center justify-center gap-2 rounded-2xl border border-transparent text-sm font-semibold text-white transition-colors disabled:cursor-not-allowed disabled:opacity-60"
                     style={{
                       backgroundColor:
-                        isLoading || !formData.otp || formData.otp.length !== 6
+                        isLoading || !formData.otp || formData.otp.length !== 4
                           ? '#f1f1f1'
                           : primaryColor,
                       color:
-                        isLoading || !formData.otp || formData.otp.length !== 6
+                        isLoading || !formData.otp || formData.otp.length !== 4
                           ? '#b0b0b0'
                           : '#ffffff',
                     }}
@@ -496,6 +569,7 @@ export default function ForgotPassword() {
                   onClick={() => {
                     setStep(1);
                     setFormData(prev => ({ ...prev, otp: '' }));
+                    setOtpDigits(['', '', '', '']);
                     setNotification({ message: '', type: '' });
                   }}
                   className="w-full text-center text-sm text-neutral-500 hover:text-neutral-700"
