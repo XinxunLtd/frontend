@@ -481,3 +481,63 @@ export const updateUserProfile = async ({ name, profile }) => {
 export const deleteUserProfile = async () => {
   return apiRequest('/users/profile', { method: 'DELETE' });
 };
+
+// Forgot Password - Request OTP
+export const requestForgotPasswordOTP = async (number) => {
+  try {
+    const response = await fetch(`${BASE_URL}/auth/forgot-password/request-otp`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ number })
+    });
+    const data = await response.json().catch(() => ({}));
+    return data;
+  } catch (error) {
+    return { success: false, message: error.message || 'Gagal meminta OTP' };
+  }
+};
+
+// Forgot Password - Resend OTP
+export const resendForgotPasswordOTP = async (number) => {
+  try {
+    const response = await fetch(`${BASE_URL}/auth/forgot-password/resend-otp`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ number })
+    });
+    const data = await response.json().catch(() => ({}));
+    return data;
+  } catch (error) {
+    return { success: false, message: error.message || 'Gagal mengirim ulang OTP' };
+  }
+};
+
+// Forgot Password - Verify OTP
+export const verifyForgotPasswordOTP = async (otp, requestId) => {
+  try {
+    const response = await fetch(`${BASE_URL}/auth/forgot-password/verify-otp`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ otp, request_id: requestId })
+    });
+    const data = await response.json().catch(() => ({}));
+    return data;
+  } catch (error) {
+    return { success: false, message: error.message || 'Gagal memverifikasi OTP' };
+  }
+};
+
+// Forgot Password - Reset Password
+export const resetPassword = async (password, confirmPassword, token) => {
+  try {
+    const response = await fetch(`${BASE_URL}/auth/forgot-password/reset-password`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password, confirm_password: confirmPassword, token })
+    });
+    const data = await response.json().catch(() => ({}));
+    return data;
+  } catch (error) {
+    return { success: false, message: error.message || 'Gagal mengubah password' };
+  }
+};

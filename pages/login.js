@@ -316,6 +316,15 @@ export default function Login() {
                                 )}
                             </button>
 
+                            <div className="mt-3 text-right">
+                                <Link
+                                    href="/forgot-password"
+                                    className="text-xs font-medium text-[#fe7d17] hover:underline"
+                                >
+                                    Lupa password?
+                                </Link>
+                            </div>
+
                             <p className="mt-4 text-center text-xs text-neutral-500">
                                 Dengan masuk, Anda menyetujui {' '}
                                 <Link
