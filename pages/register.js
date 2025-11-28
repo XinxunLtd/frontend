@@ -25,6 +25,7 @@ export default function Register() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [passwordStrength, setPasswordStrength] = useState(0);
   const [termsAgreed, setTermsAgreed] = useState(false);
+  const [rateLimitCountdown, setRateLimitCountdown] = useState(0);
   const [formValidation, setFormValidation] = useState({
     name: false,
     number: false,
@@ -115,6 +116,20 @@ export default function Register() {
     setPasswordStrength(checkPasswordStrength(formData.password));
   }, [formData]);
 
+  // Countdown timer for rate limiting
+  useEffect(() => {
+    if (rateLimitCountdown > 0) {
+      const timer = setTimeout(() => setRateLimitCountdown(rateLimitCountdown - 1), 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [rateLimitCountdown]);
+
+  const formatTime = (seconds) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
+
   const handleChange = (e) => {
     const { id, value } = e.target;
     if (id === 'name') {
@@ -179,34 +194,24 @@ export default function Register() {
         }, 500);
         
       } else if (result && result.success === false) {
-        const errorMessage = result.message || 'Terjadi kesalahan. Silakan coba lagi.';
-        setNotification({ message: errorMessage, type: 'error' });
+        // Handle rate limiting (429)
+        if (result.status === 429 && result.data?.retry_after_seconds) {
+          setRateLimitCountdown(result.data.retry_after_seconds);
+          setNotification({ 
+            message: result.message || 'Terlalu banyak permintaan. Silakan coba lagi nanti.', 
+            type: 'error' 
+          });
+        } else {
+          const errorMessage = result.message || 'Terjadi kesalahan. Silakan coba lagi.';
+          setNotification({ message: errorMessage, type: 'error' });
+        }
       } else {
         setNotification({ message: 'Respon server tidak valid. Silakan coba lagi.', type: 'error' });
       }
       
     } catch (error) {
       console.error('Register error:', error);
-      
-      if (error.response) {
-        const statusCode = error.response.status;
-        const responseData = error.response.data;
-        
-        if (statusCode >= 400 && statusCode < 500) {
-          const errorMessage = responseData?.message || 'Data yang dimasukkan tidak valid';
-          setNotification({ message: errorMessage, type: 'error' });
-        } else if (statusCode >= 500) {
-          const errorMessage = responseData?.message || 'Terjadi kesalahan server. Silakan coba lagi nanti.';
-          setNotification({ message: errorMessage, type: 'error' });
-        } else {
-          setNotification({ message: 'Terjadi kesalahan yang tidak diketahui', type: 'error' });
-        }
-      } else if (error.request) {
-        setNotification({ message: 'Tidak dapat terhubung ke server. Periksa koneksi internet Anda.', type: 'error' });
-      } else {
-        const errorMessage = error.message || 'Terjadi kesalahan. Silakan coba lagi.';
-        setNotification({ message: errorMessage, type: 'error' });
-      }
+      setNotification({ message: error.message || 'Terjadi kesalahan. Silakan coba lagi.', type: 'error' });
     } finally {
       setIsLoading(false);
     }
@@ -498,20 +503,25 @@ export default function Register() {
                 className="mt-3 flex h-11 w-full items-center justify-center gap-2 rounded-2xl border border-transparent text-sm font-semibold text-white transition-colors disabled:cursor-not-allowed disabled:opacity-60"
                 style={{
                   backgroundColor:
-                    !maintenanceMode && !closedRegister && isFormValid
+                    !maintenanceMode && !closedRegister && isFormValid && rateLimitCountdown === 0
                       ? primaryColor
                       : '#f1f1f1',
                   color:
-                    !maintenanceMode && !closedRegister && isFormValid
+                    !maintenanceMode && !closedRegister && isFormValid && rateLimitCountdown === 0
                       ? '#ffffff'
                       : '#b0b0b0',
                 }}
-                disabled={isLoading || !isFormValid || maintenanceMode || closedRegister}
+                disabled={isLoading || !isFormValid || maintenanceMode || closedRegister || rateLimitCountdown > 0}
               >
                 {isLoading ? (
                   <>
                     <span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
                     <span>Sedang mendaftar...</span>
+                  </>
+                ) : rateLimitCountdown > 0 ? (
+                  <>
+                    <Icon icon="mdi:clock-outline" className="w-4 h-4" />
+                    <span>Coba lagi dalam {formatTime(rateLimitCountdown)}</span>
                   </>
                 ) : (
                   <span>Daftar</span>

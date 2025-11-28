@@ -343,7 +343,7 @@ export const registerUser = async (userData) => {
       body: JSON.stringify(userData)
     });
     
-    const data = await response.json();
+    const data = await response.json().catch(() => ({}));
     
     if (response.ok && data.success) {
       // Store tokens and user info
@@ -354,11 +354,22 @@ export const registerUser = async (userData) => {
       localStorage.setItem('application', JSON.stringify(data.data.application));
       localStorage.setItem('user', JSON.stringify(data.data.user));
   try { window.dispatchEvent(new Event('user-token-changed')); } catch {}
-      return data;
+      return { ...data, status: response.status };
     }
-    throw new Error(data.message || 'Registration failed');
+    // Return error with status code and data for rate limiting handling
+    return { 
+      success: false, 
+      message: data.message || 'Registration failed',
+      status: response.status,
+      data: data.data || null
+    };
   } catch (error) {
-    throw error;
+    return {
+      success: false,
+      message: error.message || 'Terjadi kesalahan',
+      status: 0,
+      data: null
+    };
   }
 };
 
@@ -370,7 +381,7 @@ export const loginUser = async (credentials) => {
       body: JSON.stringify(credentials)
     });
     
-    const data = await response.json();
+    const data = await response.json().catch(() => ({}));
     
     if (response.ok && data.success) {
       // Store tokens and user info
@@ -380,11 +391,22 @@ export const loginUser = async (credentials) => {
       localStorage.setItem('application', JSON.stringify(data.data.application));
       localStorage.setItem('user', JSON.stringify(data.data.user));
   try { window.dispatchEvent(new Event('user-token-changed')); } catch {}
-      return data;
+      return { ...data, status: response.status };
     }
-    throw new Error(data.message || 'Login failed');
+    // Return error with status code and data for rate limiting handling
+    return { 
+      success: false, 
+      message: data.message || 'Login failed',
+      status: response.status,
+      data: data.data || null
+    };
   } catch (error) {
-    throw error;
+    return {
+      success: false,
+      message: error.message || 'Terjadi kesalahan',
+      status: 0,
+      data: null
+    };
   }
 };
 
