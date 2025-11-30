@@ -525,6 +525,19 @@ export default function Dashboard() {
                 </a>
               ))}
             </div>
+            
+            {/* Link to more articles */}
+            <div className="mt-4 text-center">
+              <a
+                href="https://news.xinxun.us/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs text-gray-600 hover:text-[#fe7d17] transition-colors inline-flex items-center gap-1"
+              >
+                <span>Lihat artikel lainnya</span>
+                <Icon icon="mdi:arrow-right" className="w-3.5 h-3.5" />
+              </a>
+            </div>
           </div>
         )}
 
