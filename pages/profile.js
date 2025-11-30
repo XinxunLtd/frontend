@@ -36,11 +36,12 @@ export default function Profile() {
         name: "Tester",
         number: "882646678601",
         balance: 0,
-	level: 0,
+	      level: 0,
         total_deposit: 0,
         total_withdraw: 0,
         level: 0,
         active: false,
+        publisher: false,
         profile: null
       });
     } else {
@@ -362,6 +363,22 @@ export default function Profile() {
               </div>
               <Icon icon="mdi:chevron-right" className="w-5 h-5 text-gray-400" />
             </button>
+
+            {userData?.publisher === true && (
+              <button
+                onClick={() => window.open('https://news.xinxun.us/publisher/login', '_blank')}
+                className="w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors"
+              >
+                <div className="w-9 h-9 rounded-lg bg-indigo-50 flex items-center justify-center">
+                  <Icon icon="mdi:newspaper" className="w-5 h-5 text-indigo-600" />
+                </div>
+                <div className="flex-1 text-left">
+                  <p className="text-sm font-medium text-gray-900">Situs Publisher</p>
+                  <p className="text-xs text-gray-500">Kelola artikel Anda</p>
+                </div>
+                <Icon icon="mdi:chevron-right" className="w-5 h-5 text-gray-400" />
+              </button>
+            )}
           </div>
         </div>
 
@@ -464,6 +481,19 @@ export default function Profile() {
               </div>
               <div className="flex-1 text-left">
                 <p className="text-sm font-medium text-gray-900">Tentang Kami</p>
+              </div>
+              <Icon icon="mdi:chevron-right" className="w-5 h-5 text-gray-400" />
+            </button>
+            
+            <button
+              onClick={() => window.open('https://news.xinxun.us', '_blank')}
+              className="w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors"
+            >
+              <div className="w-9 h-9 rounded-lg bg-indigo-50 flex items-center justify-center">
+                <Icon icon="mdi:newspaper" className="w-5 h-5 text-indigo-600" />
+              </div>
+              <div className="flex-1 text-left">
+                <p className="text-sm font-medium text-gray-900">Artikel Berita</p>
               </div>
               <Icon icon="mdi:chevron-right" className="w-5 h-5 text-gray-400" />
             </button>

@@ -25,6 +25,8 @@ export default function Dashboard() {
   const [showWelcomePopup, setShowWelcomePopup] = useState(false);
   const [showPromoPopup, setShowPromoPopup] = useState(false);
   const [hidePopupChecked, setHidePopupChecked] = useState(false);
+  const [articles, setArticles] = useState(null);
+  const [loadingArticles, setLoadingArticles] = useState(false);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -79,6 +81,7 @@ export default function Dashboard() {
     }
     
     fetchProducts();
+    fetchArticles();
 
     if (!popupHiddenUntil || now > parseInt(popupHiddenUntil)) {
       const popupTimer = setTimeout(() => {
@@ -140,6 +143,26 @@ export default function Dashboard() {
       setToast({ open: true, message: err.message || 'Gagal memuat produk', type: 'error' });
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchArticles = async () => {
+    setLoadingArticles(true);
+    try {
+      const response = await fetch('https://api-news.xinxun.us/v1/xinxun/newest');
+      const data = await response.json().catch(() => ({}));
+      
+      if (data.success && data.data && Array.isArray(data.data) && data.data.length > 0) {
+        // Take only first 3 articles
+        setArticles(data.data.slice(0, 3));
+      } else {
+        setArticles(null);
+      }
+    } catch (error) {
+      // Silent fail - don't show error, just don't display articles
+      setArticles(null);
+    } finally {
+      setLoadingArticles(false);
     }
   };
 
@@ -427,6 +450,81 @@ export default function Dashboard() {
                 )}
               </>
             )}
+          </div>
+        )}
+
+        {/* Articles and News Section */}
+        {!loadingArticles && articles && articles.length > 0 && (
+          <div className="mt-8 mb-4">
+            <h3 className="text-lg font-bold text-gray-900 mb-2">Artikel dan Berita Terbaru</h3>
+            <p className="text-xs text-gray-600 mb-4 leading-relaxed">
+              Dapatkan informasi terbaru seputar Xinxun! Temukan panduan lengkap untuk meningkatkan penghasilan, serta berita terkini mengenai Xinxun, update platform, dan komunitas Xinxun.
+            </p>
+            
+            <div className="space-y-3">
+              {articles.map((article, index) => (
+                <a
+                  key={index}
+                  href={article.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block bg-white rounded-xl border border-gray-200 hover:border-gray-300 hover:shadow-sm transition-all overflow-hidden group"
+                >
+                  <div className="flex gap-3 p-4">
+                    {article.thumbnail && (
+                      <div className="relative w-24 h-24 rounded-lg overflow-hidden flex-shrink-0 bg-gray-100">
+                        <Image
+                          src={article.thumbnail}
+                          alt={article.title}
+                          fill
+                          className="object-cover group-hover:scale-105 transition-transform duration-300"
+                          unoptimized
+                        />
+                      </div>
+                    )}
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-1.5 flex-wrap">
+                        {article.categories && (
+                          <span className="px-2 py-0.5 bg-gray-100 text-gray-600 text-xs font-medium rounded">
+                            {article.categories}
+                          </span>
+                        )}
+                        {article.views !== undefined && (
+                          <div className="flex items-center gap-1 text-xs text-gray-500">
+                            <Icon icon="mdi:eye-outline" className="w-3.5 h-3.5" />
+                            <span>{article.views}</span>
+                          </div>
+                        )}
+                      </div>
+                      <h4 
+                        className="font-semibold text-gray-900 text-sm mb-1.5 group-hover:text-[#fe7d17] transition-colors"
+                        style={{
+                          display: '-webkit-box',
+                          WebkitLineClamp: 2,
+                          WebkitBoxOrient: 'vertical',
+                          overflow: 'hidden'
+                        }}
+                      >
+                        {article.title}
+                      </h4>
+                      {article.excerpt && article.excerpt !== article.title && (
+                        <p 
+                          className="text-xs text-gray-600"
+                          style={{
+                            display: '-webkit-box',
+                            WebkitLineClamp: 2,
+                            WebkitBoxOrient: 'vertical',
+                            overflow: 'hidden'
+                          }}
+                        >
+                          {article.excerpt}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                </a>
+              ))}
+            </div>
           </div>
         )}
 
