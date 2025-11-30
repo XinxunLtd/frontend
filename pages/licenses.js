@@ -15,7 +15,7 @@ const licensesData = {
       logo: '/licenses/ojk_indonesia.png'
     },
     {
-      institution: 'Komdigi',
+      institution: 'Kementerian Komunikasi dan Digital',
       company: 'Xinxun, Ltd',
       logo: '/licenses/komdigi_indonesia.png'
     }
@@ -146,14 +146,14 @@ export default function Licenses() {
                     key={index}
                     className="bg-white rounded-xl border border-gray-200 p-5 hover:shadow-lg transition-all"
                   >
-                    {/* Company Name */}
+                    {/* Institution Name */}
                     <h4 className="font-bold text-gray-900 text-base mb-3">
-                      {license.company}
+                      {license.institution}
                     </h4>
                     
-                    {/* Institution Description */}
-                    <p className="text-sm text-gray-700 mb-5 leading-relaxed min-h-[3rem]">
-                      {license.institution}
+                    {/* Company Name */}
+                    <p className="font-medium text-base text-gray-700 mb-5 leading-relaxed min-h-[3rem]">
+                      {license.company}
                     </p>
                     
                     {/* Institution Logo */}
