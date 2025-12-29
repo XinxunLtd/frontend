@@ -8,8 +8,8 @@ const ChatButton = ({ isOpen, onClick, notificationCount = 0, className = '' }) 
         <button
             onClick={onClick}
             className={`fixed z-50 flex h-14 w-14 items-center justify-center rounded-full shadow-lg transition-all duration-300 hover:scale-110 active:scale-95 ${isOpen
-                    ? 'bg-red-500 hover:bg-red-600'
-                    : 'bg-blue-600 hover:bg-blue-700'
+                ? 'bg-red-500 hover:bg-red-600'
+                : 'bg-[#fe7d17] hover:bg-[#e66e10]'
                 } ${className || 'bottom-6 right-6'}`}
             aria-label={isOpen ? "Close chat" : "Open chat"}
         >

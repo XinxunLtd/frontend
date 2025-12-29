@@ -17,8 +17,8 @@ const LiveChatWidget = (props) => {
 
     // Initialize auth token
     useEffect(() => {
-        // Basic check for token in localStorage. Adapt based on actual auth implementation.
-        const storedToken = localStorage.getItem('token');
+        // Check both localStorage and sessionStorage for token
+        const storedToken = localStorage.getItem('token') || sessionStorage.getItem('token');
         if (storedToken) {
             setToken(storedToken);
         }

@@ -60,15 +60,19 @@ export default function BottomNavbar() {
   };
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 pb-3 px-3 pointer-events-none">
-      <div className="max-w-md mx-auto pointer-events-auto">
-        <div className="bg-white rounded-2xl shadow-lg border border-gray-200 px-2 py-2">
-          <div className="flex items-center justify-around">
-            {navItems.map(renderNavItem)}
+    <>
+      <div className="fixed bottom-0 left-0 right-0 pb-3 px-3 pointer-events-none">
+        <div className="max-w-md mx-auto pointer-events-auto">
+          <div className="bg-white rounded-2xl shadow-lg border border-gray-200 px-2 py-2">
+            <div className="flex items-center justify-around">
+              {navItems.map(renderNavItem)}
+            </div>
           </div>
         </div>
       </div>
-      <LiveChatWidget customPosition="bottom-24 right-4" />
-    </div >
+      <div className="pointer-events-auto">
+        <LiveChatWidget customPosition="bottom-24 right-4" />
+      </div>
+    </>
   );
 }
