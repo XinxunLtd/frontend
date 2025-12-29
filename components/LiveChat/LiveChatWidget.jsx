@@ -175,6 +175,14 @@ const LiveChatWidget = (props) => {
         }
     };
 
+    const toggleChat = () => {
+        if (!isOpen && !sessionId && !isEnded) {
+            // Auto-start chat on first open if no previous session
+            startChat();
+        }
+        setIsOpen(!isOpen);
+    };
+
     const handleNewChat = () => {
         clearSession();
         // Optionally immediate start or wait for user input
