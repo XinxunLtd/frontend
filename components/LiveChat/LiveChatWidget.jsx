@@ -175,12 +175,10 @@ const LiveChatWidget = (props) => {
         }
     };
 
-    const toggleChat = () => {
-        if (!isOpen && !sessionId && !isEnded) {
-            // Auto-start chat on first open if no previous session
-            startChat();
-        }
-        setIsOpen(!isOpen);
+    const handleNewChat = () => {
+        clearSession();
+        // Optionally immediate start or wait for user input
+        startChat();
     };
 
     return (
@@ -190,16 +188,20 @@ const LiveChatWidget = (props) => {
                     messages={messages}
                     onSendMessage={handleSendMessage}
                     onEndChat={handleEndChat}
+                    onClose={() => setIsOpen(false)}
+                    onNewChat={handleNewChat}
                     isLoading={isLoading}
                     isEnded={isEnded}
                 />
             )}
-            <ChatButton
-                isOpen={isOpen}
-                onClick={toggleChat}
-                notificationCount={0} // Can be wired up to unread count logic later
-                className={props.customPosition}
-            />
+            {!isOpen && (
+                <ChatButton
+                    isOpen={isOpen}
+                    onClick={toggleChat}
+                    notificationCount={0} // Can be wired up to unread count logic later
+                    className={props.customPosition}
+                />
+            )}
         </>
     );
 };

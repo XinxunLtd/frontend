@@ -7,6 +7,8 @@ const ChatWindow = ({
     messages,
     onSendMessage,
     onEndChat,
+    onClose,
+    onNewChat,
     isLoading,
     isEnded,
     currentUserId
@@ -56,11 +58,19 @@ const ChatWindow = ({
                     </div>
                 </div>
                 <div className="flex items-center space-x-1">
+                    {!isEnded && (
+                        <button
+                            onClick={onEndChat}
+                            className="rounded-full p-2 text-white/90 hover:bg-white/10 hover:text-white"
+                            title="End Chat"
+                        >
+                            <span className="text-xs font-semibold">End</span>
+                        </button>
+                    )}
                     <button
-                        onClick={onEndChat}
-                        disabled={isEnded}
-                        className="rounded-full p-2 text-white/90 hover:bg-white/10 hover:text-white disabled:opacity-50"
-                        title="End Chat"
+                        onClick={onClose}
+                        className="rounded-full p-2 text-white/90 hover:bg-white/10 hover:text-white"
+                        title="Close Window"
                     >
                         <X className="h-5 w-5" />
                     </button>
@@ -118,10 +128,16 @@ const ChatWindow = ({
                     )}
 
                     {isEnded && (
-                        <div className="flex justify-center py-4">
+                        <div className="flex flex-col items-center justify-center py-4 space-y-2">
                             <span className="text-xs text-gray-500 dark:text-gray-400">
                                 Chat session has ended
                             </span>
+                            <button
+                                onClick={onNewChat}
+                                className="rounded-full bg-[#fe7d17] px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-[#e66e10] transition-colors"
+                            >
+                                Mulai Chat Baru
+                            </button>
                         </div>
                     )}
 
