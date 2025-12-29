@@ -40,7 +40,7 @@ const ChatWindow = ({
     };
 
     return (
-        <div className="fixed bottom-0 right-0 z-50 flex h-full w-full flex-col overflow-hidden bg-white shadow-2xl transition-all duration-300 sm:bottom-24 sm:right-6 sm:h-[500px] sm:w-[380px] sm:rounded-2xl sm:ring-1 sm:ring-black/5 dark:bg-slate-900 dark:ring-white/10">
+        <div className="fixed bottom-0 right-0 z-[9999] flex h-full w-full flex-col overflow-hidden bg-white shadow-2xl transition-all duration-300 sm:bottom-24 sm:right-6 sm:h-[500px] sm:w-[380px] sm:rounded-2xl sm:ring-1 sm:ring-black/5 dark:bg-slate-900 dark:ring-white/10">
             {/* Header */}
             <div className="flex items-center justify-between bg-[#fe7d17] p-4 text-white">
                 <div className="flex items-center space-x-3">
@@ -51,9 +51,9 @@ const ChatWindow = ({
                         <span className="absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-[#fe7d17] bg-green-400"></span>
                     </div>
                     <div>
-                        <h3 className="font-semibold text-white">CS Xinxun</h3>
+                        <h3 className="font-semibold text-white">Xinxun Agent</h3>
                         <p className="text-xs text-white/90">
-                            {isEnded ? "Chat Ended" : "Online"}
+                            {isEnded ? "Sesi chat telah berakhir" : "Online"}
                         </p>
                     </div>
                 </div>
@@ -64,7 +64,7 @@ const ChatWindow = ({
                             className="rounded-full p-2 text-white/90 hover:bg-white/10 hover:text-white"
                             title="End Chat"
                         >
-                            <span className="text-xs font-semibold">End</span>
+                            <span className="text-xs font-semibold">Akhiri</span>
                         </button>
                     )}
                     <button
@@ -82,7 +82,7 @@ const ChatWindow = ({
                 <div className="space-y-4">
                     <div className="flex justify-center">
                         <span className="rounded-full bg-[#fe7d17]/10 px-3 py-1 text-xs text-[#fe7d17] dark:bg-[#fe7d17]/20 dark:text-[#fe7d17]">
-                            Today
+                            Hari ini
                         </span>
                     </div>
 
@@ -130,7 +130,7 @@ const ChatWindow = ({
                     {isEnded && (
                         <div className="flex flex-col items-center justify-center py-4 space-y-2">
                             <span className="text-xs text-gray-500 dark:text-gray-400">
-                                Chat session has ended
+                                Sesi chat telah berakhir
                             </span>
                             <button
                                 onClick={onNewChat}
@@ -153,7 +153,7 @@ const ChatWindow = ({
                         onChange={(e) => setInputValue(e.target.value)}
                         onKeyDown={handleKeyDown}
                         disabled={isEnded || isLoading}
-                        placeholder={isEnded ? "Start a new chat to continue..." : "Type your message..."}
+                        placeholder={isEnded ? "Mulai chat baru untuk melanjutkan..." : "Tuliskan pesanmu..."}
                         className="max-h-32 min-h-[44px] w-full resize-none rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-900 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-[#fe7d17] disabled:bg-gray-100 disabled:text-gray-400 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:placeholder-slate-400 dark:focus:ring-[#fe7d17]"
                         rows="1"
                         style={{ height: '44px' }}
