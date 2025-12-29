@@ -2,6 +2,7 @@
 import { Home, Users, CreditCard, User } from 'lucide-react';
 import { useRouter } from 'next/router';
 import { Icon } from '@iconify/react';
+import LiveChatWidget from './LiveChat/LiveChatWidget';
 
 const navItems = [
   { label: 'Home', icon: Home, href: '/dashboard', key: 'dashboard' },
@@ -33,8 +34,8 @@ export default function BottomNavbar() {
 
     const IconComponent = item.icon;
     const isActive = router.pathname === item.href ||
-                    (item.key === 'dashboard' && router.pathname === '/') ||
-                    (item.href !== '/dashboard' && router.pathname.startsWith(item.href));
+      (item.key === 'dashboard' && router.pathname === '/') ||
+      (item.href !== '/dashboard' && router.pathname.startsWith(item.href));
 
     return (
       <button
@@ -42,19 +43,16 @@ export default function BottomNavbar() {
         onClick={() => router.push(item.href)}
         className="flex-1 flex flex-col items-center justify-center py-2 transition-all active:scale-95"
       >
-        <div className={`p-2 rounded-xl transition-all ${
-          isActive ? 'bg-[#fe7d17]/10' : ''
-        }`}>
+        <div className={`p-2 rounded-xl transition-all ${isActive ? 'bg-[#fe7d17]/10' : ''
+          }`}>
           <IconComponent
-            className={`w-6 h-6 transition-colors ${
-              isActive ? 'text-[#fe7d17]' : 'text-gray-400'
-            }`}
+            className={`w-6 h-6 transition-colors ${isActive ? 'text-[#fe7d17]' : 'text-gray-400'
+              }`}
             strokeWidth={isActive ? 2.5 : 2}
           />
         </div>
-        <span className={`text-[10px] font-medium mt-1 transition-colors ${
-          isActive ? 'text-[#fe7d17]' : 'text-gray-500'
-        }`}>
+        <span className={`text-[10px] font-medium mt-1 transition-colors ${isActive ? 'text-[#fe7d17]' : 'text-gray-500'
+          }`}>
           {item.label}
         </span>
       </button>
@@ -70,6 +68,7 @@ export default function BottomNavbar() {
           </div>
         </div>
       </div>
-    </div>
+      <LiveChatWidget customPosition="bottom-24 right-4" />
+    </div >
   );
 }

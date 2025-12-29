@@ -2,6 +2,7 @@
 import Head from 'next/head';
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
+import LiveChatWidget from '../components/LiveChat/LiveChatWidget';
 import { Icon } from '@iconify/react';
 import { useRouter } from 'next/router';
 
@@ -34,22 +35,22 @@ export default function PrivacyPolicy() {
 
       <div className="min-h-screen bg-gray-50">
         {/* Top Navigation */}
-      <div className="bg-white border-b border-gray-200">
-        <div className="max-w-md mx-auto px-4 py-3 flex items-center gap-3">
-          <button
-            onClick={() => router.back()}
-            className="p-2 rounded-lg hover:bg-gray-100"
-          >
-            <Icon icon="mdi:arrow-left" className="w-5 h-5 text-gray-700" />
-          </button>
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: `${primaryColor}15` }}>
-              <Icon icon="mdi:shield-check-outline" className="w-5 h-5" style={{ color: primaryColor }} />
+        <div className="bg-white border-b border-gray-200">
+          <div className="max-w-md mx-auto px-4 py-3 flex items-center gap-3">
+            <button
+              onClick={() => router.back()}
+              className="p-2 rounded-lg hover:bg-gray-100"
+            >
+              <Icon icon="mdi:arrow-left" className="w-5 h-5 text-gray-700" />
+            </button>
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: `${primaryColor} 15` }}>
+                <Icon icon="mdi:shield-check-outline" className="w-5 h-5" style={{ color: primaryColor }} />
+              </div>
+              <h1 className="text-base font-bold text-gray-900">Kebijakan Privasi</h1>
             </div>
-            <h1 className="text-base font-bold text-gray-900">Kebijakan Privasi</h1>
           </div>
         </div>
-      </div>
 
         {/* Header */}
         <div className="pt-6 pb-4 px-4">
@@ -246,6 +247,7 @@ export default function PrivacyPolicy() {
 
               </div>
             </div>
+            <LiveChatWidget />
           </div>
         </div>
       </div>

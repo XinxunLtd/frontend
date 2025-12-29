@@ -5,6 +5,7 @@ import { useRouter } from 'next/router';
 import { Icon } from '@iconify/react';
 import { loginUser, getInfo } from '../utils/api';
 import Image from 'next/image';
+import LiveChatWidget from '../components/LiveChat/LiveChatWidget';
 
 export default function Login() {
     const router = useRouter();
@@ -116,7 +117,7 @@ export default function Login() {
 
             if (result && result.success === true) {
                 setFormData({ number: '', password: '' });
-                
+
                 // Dispatch event after redirect to prevent conflicts
                 if (typeof window !== 'undefined') {
                     setTimeout(() => {
@@ -131,9 +132,9 @@ export default function Login() {
                 // Handle rate limiting (429)
                 if (result.status === 429 && result.data?.retry_after_seconds) {
                     setRateLimitCountdown(result.data.retry_after_seconds);
-                    setNotification({ 
-                        message: result.message || 'Terlalu banyak permintaan. Silakan coba lagi nanti.', 
-                        type: 'error' 
+                    setNotification({
+                        message: result.message || 'Terlalu banyak permintaan. Silakan coba lagi nanti.',
+                        type: 'error'
                     });
                 } else {
                     const errorMessage = result.message || 'Terjadi kesalahan. Silakan coba lagi.';
@@ -153,10 +154,10 @@ export default function Login() {
 
     useEffect(() => {
         if (typeof window === 'undefined') return;
-        
+
         // Set flag to prevent UserContext from redirecting while on login page
         sessionStorage.setItem('is_on_login_page', 'true');
-        
+
         // Check if user just logged out - if so, don't auto-redirect
         const justLoggedOut = sessionStorage.getItem('just_logged_out');
         if (justLoggedOut) {
@@ -166,7 +167,7 @@ export default function Login() {
                 sessionStorage.removeItem('is_on_login_page');
             };
         }
-        
+
         // Only check token once on mount, not on every router change
         const token = sessionStorage.getItem('token');
         const accessExpire = sessionStorage.getItem('access_expire');
@@ -187,7 +188,7 @@ export default function Login() {
                 // Invalid date, ignore
             }
         }
-        
+
         // Cleanup flag when component unmounts
         return () => {
             sessionStorage.removeItem('is_on_login_page');
@@ -214,7 +215,7 @@ export default function Login() {
                 <title>{applicationData?.name || 'XinXun'} | Login</title>
                 <meta name="description" content={`Masuk untuk melanjutkan ke dashboard ${applicationData?.name || 'XinXun'} Anda dan kelola investasi Anda.`} />
                 <link rel="icon" href="/favicon.ico" />
-        
+
                 {/* Open Graph / Social Media */}
                 <meta property="og:type" content="website" />
                 <meta property="og:title" content={`${applicationData?.name || 'XinXun'} | Login`} />
@@ -222,7 +223,7 @@ export default function Login() {
                 <meta property="og:image" content={ogImageUrl} />
                 <meta property="og:url" content={pageUrl || (typeof window !== 'undefined' ? window.location.href : '')} />
                 <meta property="og:site_name" content={applicationData?.name || 'XinXun'} />
-        
+
                 {/* Twitter Card */}
                 <meta name="twitter:card" content="summary_large_image" />
                 <meta name="twitter:title" content={`${applicationData?.name || 'XinXun'} | Login`} />
@@ -255,11 +256,10 @@ export default function Login() {
                     <div className="border rounded-3xl bg-white shadow-sm px-6 py-7">
                         {notification.message && (
                             <div
-                                className={`mb-4 flex items-start gap-2 rounded-2xl px-4 py-3 text-sm ${
-                                    notification.type === 'success'
-                                        ? 'bg-emerald-50 text-emerald-700 border border-emerald-100'
-                                        : 'bg-red-50 text-red-700 border border-red-100'
-                                }`}
+                                className={`mb-4 flex items-start gap-2 rounded-2xl px-4 py-3 text-sm ${notification.type === 'success'
+                                    ? 'bg-emerald-50 text-emerald-700 border border-emerald-100'
+                                    : 'bg-red-50 text-red-700 border border-red-100'
+                                    }`}
                             >
                                 <Icon
                                     icon={
@@ -378,7 +378,7 @@ export default function Login() {
                                     href="/terms-and-conditions"
                                     className="font-medium text-[#fe7d17]"
                                 >
-                                    Syarat & Ketentuan 
+                                    Syarat & Ketentuan
                                 </Link>{' '}
                                 serta{' '}
                                 <Link
@@ -406,6 +406,7 @@ export default function Login() {
                     </div>
                 </div>
             </div>
+            <LiveChatWidget />
         </>
     );
 }

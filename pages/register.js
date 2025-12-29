@@ -5,6 +5,7 @@ import { useRouter } from 'next/router';
 import { Icon } from '@iconify/react';
 import { registerUser, getInfo } from '../utils/api';
 import Image from 'next/image';
+import LiveChatWidget from '../components/LiveChat/LiveChatWidget';
 
 export default function Register() {
   const router = useRouter();
@@ -57,7 +58,7 @@ export default function Register() {
         }
       }
     }
-    
+
     if (router.query && router.query.reff) {
       setFormData((prev) => ({ ...prev, referral_code: router.query.reff }));
       setReferralLocked(true);
@@ -164,42 +165,42 @@ export default function Register() {
       setNotification({ message: 'Pendaftaran sedang ditutup. Silakan coba lagi nanti.', type: 'error' });
       return;
     }
-    
+
     if (formData.password !== formData.password_confirmation) {
       setNotification({ message: 'Password dan konfirmasi password tidak sama', type: 'error' });
       return;
     }
-    
+
     setIsLoading(true);
     setNotification({ message: '', type: '' });
-    
+
     try {
       const result = await registerUser(formData);
-      
+
       if (result && result.success === true) {
-        setFormData({ 
-          name: '', 
-          number: '', 
-          password: '', 
-          password_confirmation: '', 
+        setFormData({
+          name: '',
+          number: '',
+          password: '',
+          password_confirmation: '',
           referral_code: referralLocked ? formData.referral_code : ''
         });
 
         if (typeof window !== 'undefined') {
           window.dispatchEvent(new Event('user-token-changed'));
         }
-        
+
         setTimeout(() => {
           router.push('/dashboard');
         }, 500);
-        
+
       } else if (result && result.success === false) {
         // Handle rate limiting (429)
         if (result.status === 429 && result.data?.retry_after_seconds) {
           setRateLimitCountdown(result.data.retry_after_seconds);
-          setNotification({ 
-            message: result.message || 'Terlalu banyak permintaan. Silakan coba lagi nanti.', 
-            type: 'error' 
+          setNotification({
+            message: result.message || 'Terlalu banyak permintaan. Silakan coba lagi nanti.',
+            type: 'error'
           });
         } else {
           const errorMessage = result.message || 'Terjadi kesalahan. Silakan coba lagi.';
@@ -208,7 +209,7 @@ export default function Register() {
       } else {
         setNotification({ message: 'Respon server tidak valid. Silakan coba lagi.', type: 'error' });
       }
-      
+
     } catch (error) {
       console.error('Register error:', error);
       setNotification({ message: error.message || 'Terjadi kesalahan. Silakan coba lagi.', type: 'error' });
@@ -238,7 +239,7 @@ export default function Register() {
 
   // Get referral code from query
   const referralCode = router.query?.reff || '';
-  
+
   // Generate description based on referral code
   const getDescription = () => {
     if (referralCode) {
@@ -264,7 +265,7 @@ export default function Register() {
         <title>{applicationData?.name || 'XinXun'} | Register</title>
         <meta name="description" content={getDescription()} />
         <link rel="icon" href="/favicon.ico" />
-        
+
         {/* Open Graph / Social Media */}
         <meta property="og:type" content="website" />
         <meta property="og:title" content={`${applicationData?.name || 'XinXun'} | Register`} />
@@ -272,14 +273,14 @@ export default function Register() {
         <meta property="og:image" content={ogImageUrl} />
         <meta property="og:url" content={pageUrl || (typeof window !== 'undefined' ? window.location.href : '')} />
         <meta property="og:site_name" content={applicationData?.name || 'XinXun'} />
-        
+
         {/* Twitter Card */}
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={`${applicationData?.name || 'XinXun'} | Register`} />
         <meta name="twitter:description" content={getDescription()} />
         <meta name="twitter:image" content={ogImageUrl} />
       </Head>
-      
+
       <div className="min-h-screen flex items-center justify-center bg-white px-4 py-8">
         <div className="w-full max-w-xl">
           <div className="flex flex-col items-center mb-8">
@@ -305,11 +306,10 @@ export default function Register() {
           <div className="border rounded-3xl bg-white shadow-sm px-6 py-7">
             {notification.message && (
               <div
-                className={`mb-4 flex items-start gap-2 rounded-2xl px-4 py-3 text-sm ${
-                  notification.type === 'success'
-                    ? 'bg-emerald-50 text-emerald-700 border border-emerald-100'
-                    : 'bg-red-50 text-red-700 border border-red-100'
-                }`}
+                className={`mb-4 flex items-start gap-2 rounded-2xl px-4 py-3 text-sm ${notification.type === 'success'
+                  ? 'bg-emerald-50 text-emerald-700 border border-emerald-100'
+                  : 'bg-red-50 text-red-700 border border-red-100'
+                  }`}
               >
                 <Icon
                   icon={
@@ -324,7 +324,7 @@ export default function Register() {
             )}
 
             <form onSubmit={handleSubmit} className="space-y-4">
-                    
+
               {/* Name Field */}
               <div>
                 <label
@@ -463,9 +463,8 @@ export default function Register() {
                 <input
                   type="text"
                   id="referral_code"
-                  className={`h-10 w-full rounded-xl border border-neutral-200 bg-white px-3 text-sm text-neutral-900 outline-none placeholder:text-neutral-400 focus:ring-2 focus:ring-[#fe7d17] ${
-                    referralLocked ? 'cursor-not-allowed bg-neutral-50' : ''
-                  }`}
+                  className={`h-10 w-full rounded-xl border border-neutral-200 bg-white px-3 text-sm text-neutral-900 outline-none placeholder:text-neutral-400 focus:ring-2 focus:ring-[#fe7d17] ${referralLocked ? 'cursor-not-allowed bg-neutral-50' : ''
+                    }`}
                   placeholder="Masukkan kode referral"
                   value={formData.referral_code}
                   onChange={handleChange}
@@ -551,6 +550,7 @@ export default function Register() {
           </div>
         </div>
       </div>
+      <LiveChatWidget />
     </>
   );
 }

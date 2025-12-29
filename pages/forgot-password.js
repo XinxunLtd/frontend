@@ -4,21 +4,22 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { Icon } from '@iconify/react';
 import Image from 'next/image';
-import { 
-  requestForgotPasswordOTP, 
-  resendForgotPasswordOTP, 
-  verifyForgotPasswordOTP, 
-  resetPassword 
+import LiveChatWidget from '../components/LiveChat/LiveChatWidget';
+import {
+  requestForgotPasswordOTP,
+  resendForgotPasswordOTP,
+  verifyForgotPasswordOTP,
+  resetPassword
 } from '../utils/api';
 
 export default function ForgotPassword() {
   const router = useRouter();
   const [step, setStep] = useState(1); // 1: Request OTP, 2: Verify OTP, 3: Reset Password
-  const [formData, setFormData] = useState({ 
-    number: '', 
-    otp: '', 
-    password: '', 
-    confirmPassword: '' 
+  const [formData, setFormData] = useState({
+    number: '',
+    otp: '',
+    password: '',
+    confirmPassword: ''
   });
   const [otpDigits, setOtpDigits] = useState(['', '', '', '']);
   const otpInputRef0 = useRef(null);
@@ -102,16 +103,16 @@ export default function ForgotPassword() {
   const handleOtpChange = (index, value) => {
     // Only allow numbers
     const digit = value.replace(/[^0-9]/g, '').slice(0, 1);
-    
+
     const newDigits = [...otpDigits];
     newDigits[index] = digit;
     setOtpDigits(newDigits);
-    
+
     // Update formData.otp
     const otpValue = newDigits.join('');
     setFormData((prev) => ({ ...prev, otp: otpValue }));
     setNotification({ message: '', type: '' });
-    
+
     // Auto focus to next input
     if (digit && index < 3) {
       const refs = [otpInputRef0, otpInputRef1, otpInputRef2, otpInputRef3];
@@ -123,17 +124,17 @@ export default function ForgotPassword() {
   const handleOtpPaste = (e) => {
     e.preventDefault();
     const pastedData = e.clipboardData.getData('text').replace(/[^0-9]/g, '').slice(0, 4);
-    
+
     if (pastedData.length > 0) {
       const newDigits = [...otpDigits];
       for (let i = 0; i < 4; i++) {
         newDigits[i] = pastedData[i] || '';
       }
       setOtpDigits(newDigits);
-      
+
       const otpValue = newDigits.join('');
       setFormData((prev) => ({ ...prev, otp: otpValue }));
-      
+
       // Focus on last filled input or first empty
       const refs = [otpInputRef0, otpInputRef1, otpInputRef2, otpInputRef3];
       const focusIndex = Math.min(pastedData.length, 3);
@@ -170,43 +171,43 @@ export default function ForgotPassword() {
 
       if (result?.success) {
         setRequestId(result.data?.request_id || null);
-        setNotification({ 
-          message: result.message || 'Kode Verifikasi berhasil dikirim', 
-          type: 'success' 
+        setNotification({
+          message: result.message || 'Kode Verifikasi berhasil dikirim',
+          type: 'success'
         });
-        
+
         // Set countdown timer
         if (result.data?.retry_after_seconds) {
           setCountdown(result.data.retry_after_seconds);
         }
-        
+
         // Set resend countdown (default 60 seconds for first request)
         setResendCountdown(60);
-        
+
         // Reset OTP digits
         setOtpDigits(['', '', '', '']);
         setFormData(prev => ({ ...prev, otp: '' }));
-        
+
         setStep(2);
         // Auto focus first OTP input
         setTimeout(() => {
           otpInputRef0.current?.focus();
         }, 100);
       } else {
-        setNotification({ 
-          message: result?.message || 'Gagal mengirim kode verifikasi', 
-          type: 'error' 
+        setNotification({
+          message: result?.message || 'Gagal mengirim kode verifikasi',
+          type: 'error'
         });
-        
+
         // Set countdown if retry_after_seconds is provided
         if (result?.data?.retry_after_seconds) {
           setCountdown(result.data.retry_after_seconds);
         }
       }
     } catch (error) {
-      setNotification({ 
-        message: error.message || 'Terjadi kesalahan. Silakan coba lagi.', 
-        type: 'error' 
+      setNotification({
+        message: error.message || 'Terjadi kesalahan. Silakan coba lagi.',
+        type: 'error'
       });
     } finally {
       setIsLoading(false);
@@ -224,31 +225,31 @@ export default function ForgotPassword() {
 
       if (result?.success) {
         setRequestId(result.data?.request_id || null);
-        setNotification({ 
-          message: result.message || 'Kode Verifikasi berhasil dikirim ulang', 
-          type: 'success' 
+        setNotification({
+          message: result.message || 'Kode Verifikasi berhasil dikirim ulang',
+          type: 'success'
         });
-        
+
         // Reset OTP digits
         setOtpDigits(['', '', '', '']);
         setFormData(prev => ({ ...prev, otp: '' }));
-        
+
         // Auto focus first OTP input
         setTimeout(() => {
           otpInputRef0.current?.focus();
         }, 100);
-        
+
         // Set countdown timer
         if (result.data?.retry_after_seconds) {
           setCountdown(result.data.retry_after_seconds);
           setResendCountdown(result.data.retry_after_seconds);
         }
       } else {
-        setNotification({ 
-          message: result?.message || 'Gagal mengirim ulang kode verifikasi', 
-          type: 'error' 
+        setNotification({
+          message: result?.message || 'Gagal mengirim ulang kode verifikasi',
+          type: 'error'
         });
-        
+
         // Set countdown if retry_after_seconds is provided
         if (result?.data?.retry_after_seconds) {
           setCountdown(result.data.retry_after_seconds);
@@ -256,9 +257,9 @@ export default function ForgotPassword() {
         }
       }
     } catch (error) {
-      setNotification({ 
-        message: error.message || 'Terjadi kesalahan. Silakan coba lagi.', 
-        type: 'error' 
+      setNotification({
+        message: error.message || 'Terjadi kesalahan. Silakan coba lagi.',
+        type: 'error'
       });
     } finally {
       setIsLoading(false);
@@ -280,23 +281,23 @@ export default function ForgotPassword() {
 
       if (result?.success) {
         setResetToken(result.data?.token || null);
-        setNotification({ 
-          message: result.message || 'Kode Verifikasi benar', 
-          type: 'success' 
+        setNotification({
+          message: result.message || 'Kode Verifikasi benar',
+          type: 'success'
         });
         // Reset OTP digits
         setOtpDigits(['', '', '', '']);
         setStep(3);
       } else {
-        setNotification({ 
-          message: result?.message || 'Kode Verifikasi tidak valid', 
-          type: 'error' 
+        setNotification({
+          message: result?.message || 'Kode Verifikasi tidak valid',
+          type: 'error'
         });
       }
     } catch (error) {
-      setNotification({ 
-        message: error.message || 'Terjadi kesalahan. Silakan coba lagi.', 
-        type: 'error' 
+      setNotification({
+        message: error.message || 'Terjadi kesalahan. Silakan coba lagi.',
+        type: 'error'
       });
     } finally {
       setIsLoading(false);
@@ -305,7 +306,7 @@ export default function ForgotPassword() {
 
   const handleResetPassword = async (e) => {
     e.preventDefault();
-    
+
     if (formData.password.length < 6) {
       setNotification({ message: 'Password minimal 6 karakter', type: 'error' });
       return;
@@ -323,25 +324,25 @@ export default function ForgotPassword() {
       const result = await resetPassword(formData.password, formData.confirmPassword, resetToken);
 
       if (result?.success) {
-        setNotification({ 
-          message: result.message || 'Password berhasil diubah', 
-          type: 'success' 
+        setNotification({
+          message: result.message || 'Password berhasil diubah',
+          type: 'success'
         });
-        
+
         // Redirect to login after 5 seconds
         setTimeout(() => {
           router.push('/login');
         }, 5000);
       } else {
-        setNotification({ 
-          message: result?.message || 'Gagal mengubah password', 
-          type: 'error' 
+        setNotification({
+          message: result?.message || 'Gagal mengubah password',
+          type: 'error'
         });
       }
     } catch (error) {
-      setNotification({ 
-        message: error.message || 'Terjadi kesalahan. Silakan coba lagi.', 
-        type: 'error' 
+      setNotification({
+        message: error.message || 'Terjadi kesalahan. Silakan coba lagi.',
+        type: 'error'
       });
     } finally {
       setIsLoading(false);
@@ -384,21 +385,18 @@ export default function ForgotPassword() {
             {/* Progress Steps */}
             <div className="flex items-center justify-center mb-6">
               <div className="flex items-center gap-2">
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold ${
-                  step >= 1 ? 'bg-orange-500 text-white' : 'bg-gray-200 text-gray-500'
-                }`}>
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold ${step >= 1 ? 'bg-orange-500 text-white' : 'bg-gray-200 text-gray-500'
+                  }`}>
                   {step > 1 ? '✓' : '1'}
                 </div>
                 <div className={`w-12 h-0.5 ${step >= 2 ? 'bg-orange-500' : 'bg-gray-200'}`} />
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold ${
-                  step >= 2 ? 'bg-orange-500 text-white' : 'bg-gray-200 text-gray-500'
-                }`}>
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold ${step >= 2 ? 'bg-orange-500 text-white' : 'bg-gray-200 text-gray-500'
+                  }`}>
                   {step > 2 ? '✓' : '2'}
                 </div>
                 <div className={`w-12 h-0.5 ${step >= 3 ? 'bg-orange-500' : 'bg-gray-200'}`} />
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold ${
-                  step >= 3 ? 'bg-orange-500 text-white' : 'bg-gray-200 text-gray-500'
-                }`}>
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold ${step >= 3 ? 'bg-orange-500 text-white' : 'bg-gray-200 text-gray-500'
+                  }`}>
                   3
                 </div>
               </div>
@@ -406,11 +404,10 @@ export default function ForgotPassword() {
 
             {notification.message && (
               <div
-                className={`mb-4 flex items-start gap-2 rounded-2xl px-4 py-3 text-sm ${
-                  notification.type === 'success'
-                    ? 'bg-emerald-50 text-emerald-700 border border-emerald-100'
-                    : 'bg-red-50 text-red-700 border border-red-100'
-                }`}
+                className={`mb-4 flex items-start gap-2 rounded-2xl px-4 py-3 text-sm ${notification.type === 'success'
+                  ? 'bg-emerald-50 text-emerald-700 border border-emerald-100'
+                  : 'bg-red-50 text-red-700 border border-red-100'
+                  }`}
               >
                 <Icon
                   icon={
@@ -477,7 +474,7 @@ export default function ForgotPassword() {
                       <span>Tunggu {formatTime(countdown)}</span>
                     </>
                   ) : (
-                      <span>Kirim Kode Verifikasi</span>
+                    <span>Kirim Kode Verifikasi</span>
                   )}
                 </button>
               </form>
@@ -498,11 +495,10 @@ export default function ForgotPassword() {
                         type="text"
                         inputMode="numeric"
                         pattern="[0-9]*"
-                        className={`w-14 h-14 text-center text-2xl font-semibold rounded-xl border-2 bg-white text-neutral-900 outline-none transition-all ${
-                          otpDigits[index] 
-                            ? 'border-[#fe7d17] ring-2 ring-[#fe7d17]' 
-                            : 'border-neutral-200 focus:border-[#fe7d17] focus:ring-2 focus:ring-[#fe7d17]'
-                        }`}
+                        className={`w-14 h-14 text-center text-2xl font-semibold rounded-xl border-2 bg-white text-neutral-900 outline-none transition-all ${otpDigits[index]
+                          ? 'border-[#fe7d17] ring-2 ring-[#fe7d17]'
+                          : 'border-neutral-200 focus:border-[#fe7d17] focus:ring-2 focus:ring-[#fe7d17]'
+                          }`}
                         value={otpDigits[index]}
                         onChange={(e) => handleOtpChange(index, e.target.value)}
                         onPaste={handleOtpPaste}
@@ -661,16 +657,16 @@ export default function ForgotPassword() {
                   style={{
                     backgroundColor:
                       isLoading ||
-                      !formData.password ||
-                      formData.password.length < 6 ||
-                      formData.password !== formData.confirmPassword
+                        !formData.password ||
+                        formData.password.length < 6 ||
+                        formData.password !== formData.confirmPassword
                         ? '#f1f1f1'
                         : primaryColor,
                     color:
                       isLoading ||
-                      !formData.password ||
-                      formData.password.length < 6 ||
-                      formData.password !== formData.confirmPassword
+                        !formData.password ||
+                        formData.password.length < 6 ||
+                        formData.password !== formData.confirmPassword
                         ? '#b0b0b0'
                         : '#ffffff',
                   }}
@@ -711,7 +707,7 @@ export default function ForgotPassword() {
           </div>
         </div>
       </div>
+      <LiveChatWidget />
     </>
   );
 }
-

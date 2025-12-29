@@ -7,7 +7,7 @@ import { liveChatService } from '@/services/liveChatService';
 
 const POLL_INTERVAL = 3000; // Poll every 3 seconds for new messages
 
-const LiveChatWidget = () => {
+const LiveChatWidget = (props) => {
     const [isOpen, setIsOpen] = useState(false);
     const [sessionId, setSessionId] = useState(null);
     const [messages, setMessages] = useState([]);
@@ -198,6 +198,7 @@ const LiveChatWidget = () => {
                 isOpen={isOpen}
                 onClick={toggleChat}
                 notificationCount={0} // Can be wired up to unread count logic later
+                className={props.customPosition}
             />
         </>
     );

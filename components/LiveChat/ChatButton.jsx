@@ -3,14 +3,14 @@
 import React from 'react';
 import { MessageCircle, X } from 'lucide-react';
 
-const ChatButton = ({ isOpen, onClick, notificationCount = 0 }) => {
+const ChatButton = ({ isOpen, onClick, notificationCount = 0, className = '' }) => {
     return (
         <button
             onClick={onClick}
-            className={`fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full shadow-lg transition-all duration-300 hover:scale-110 active:scale-95 ${isOpen
+            className={`fixed z-50 flex h-14 w-14 items-center justify-center rounded-full shadow-lg transition-all duration-300 hover:scale-110 active:scale-95 ${isOpen
                     ? 'bg-red-500 hover:bg-red-600'
                     : 'bg-blue-600 hover:bg-blue-700'
-                }`}
+                } ${className || 'bottom-6 right-6'}`}
             aria-label={isOpen ? "Close chat" : "Open chat"}
         >
             {isOpen ? (
