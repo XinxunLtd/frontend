@@ -16,7 +16,7 @@ export default function UserDetail() {
   const [password, setPassword] = useState('');
   const [balanceAmount, setBalanceAmount] = useState('');
   const [balanceType, setBalanceType] = useState('add');
-  const [editData, setEditData] = useState({ name: '', number: '', status: '', investment_status: '', status_publisher: '' });
+  const [editData, setEditData] = useState({ name: '', number: '', status: '', investment_status: '', status_publisher: '', user_mode: '' });
   const [editMode, setEditMode] = useState(false);
   const [error, setError] = useState('');
   const [saving, setSaving] = useState(false);
@@ -37,7 +37,8 @@ export default function UserDetail() {
           number: res.data.number,
           status: res.data.status,
           investment_status: res.data.investment_status,
-          status_publisher: res.data.status_publisher
+          status_publisher: res.data.status_publisher,
+          user_mode: res.data.user_mode
         });
       }
     } catch (error) {
@@ -209,6 +210,13 @@ export default function UserDetail() {
                 }`}>
                   Publisher: {user.status_publisher === 'Active' ? 'Aktif' : user.status_publisher === 'Inactive' ? 'Tidak Aktif' : 'Tersuspend'}
                 </span>
+                <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+                  user.user_mode === 'real' 
+                    ? 'bg-green-500/20 text-green-400 border border-green-500/30'
+                    : 'bg-red-500/20 text-red-400 border border-red-500/30'
+                }`}>
+                  User Mode: {user.user_mode === 'real' ? 'Real' : 'Promotor'}
+                  </span>
               </div>
             </div>
           </div>
@@ -368,6 +376,32 @@ export default function UserDetail() {
                     </div>
                   )}
                 </div>
+
+                <div>
+                  <label className="block text-gray-400 text-sm mb-2">User Mode</label>
+                  {editMode ? (
+                    <select 
+                      value={editData.user_mode} 
+                      onChange={e => setEditData(d => ({ ...d, user_mode: e.target.value }))}
+                      className="w-full bg-white/10 border border-white/20 text-white rounded-2xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                    >
+                      <option value="real">Real</option>
+                      <option value="promotor">Promotor</option>
+                    </select>
+                  ) : (
+                    <div className="bg-white/5 rounded-2xl px-4 py-3">
+                      <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+                        user.user_mode === 'real' 
+                          ? 'bg-green-500/20 text-green-400 border border-green-500/30'
+                          : user.user_mode === 'promotor'
+                          ? 'bg-red-500/20 text-red-400 border border-red-500/30'
+                          : 'bg-gray-500/20 text-gray-400 border border-gray-500/30'
+                      }`}>
+                        {user.user_mode === 'real' ? 'Real' : 'Promotor'}
+                      </span>
+                    </div>
+                  )}
+                </div>
               </div>
 
               {/* Action Buttons */}
@@ -394,7 +428,8 @@ export default function UserDetail() {
                         number: user.number,
                         status: user.status,
                         investment_status: user.investment_status,
-                        status_publisher: user.status_publisher
+                        status_publisher: user.status_publisher,
+                        user_mode: user.user_mode ?? 'real'
                       });
                     }}
                     className="bg-white/10 hover:bg-white/20 text-white px-6 py-3 rounded-2xl flex items-center gap-2 transition-all"
